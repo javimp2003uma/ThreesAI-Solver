@@ -4,6 +4,7 @@ import math
 
 class State:
     def __init__(self, seed, size=4):
+        self.seed = seed
         rnd.seed(seed)
 
         self.size = size

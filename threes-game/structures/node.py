@@ -9,7 +9,7 @@ class MOVEMENTS(Enum):
 
 class Node[T]:
 
-    def __init__(self, value: T, father:Node[T], movement:MOVEMENTS) -> None:
+    def __init__(self, value: T, father, movement:MOVEMENTS) -> None:
         self.value = value
         if father != None and movement != None:
             self.father = (father,movement)
@@ -18,7 +18,7 @@ class Node[T]:
     def value(self) -> T:
         return self.value
     
-    def father(self) -> tuple[Node[T], MOVEMENTS]:
+    def father(self) -> tuple[any, MOVEMENTS]:
         return self.father
 
     
