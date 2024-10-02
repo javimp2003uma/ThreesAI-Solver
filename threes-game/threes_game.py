@@ -5,8 +5,6 @@ from state import State
 from algorithms import DepthFirstSearch, BreadthFirstSearch, AStar
 
 import tkinter as tk
-from tkinter import font
-from PIL import ImageFont, ImageDraw, Image, ImageTk
 
 BACKGROUND_COLOR = (187, 173, 160)
 CELL_COLOR = (204, 192, 179)
@@ -105,73 +103,93 @@ class QuestionUI:
     def run():
         ventana = tk.Tk()
         ventana.title("THREES by Los Monotonos")
-        ventana.config(width=675, height= 600)
+        ventana.config(width=675, height=600)
         ventana.resizable(False, False)
 
-    
-        titulo_programa = tk.Label(text="THREES GAME", font= "arial 30 bold", fg= "black")
-        titulo_programa.place(x= 200, y= 20)
+        titulo_programa = tk.Label(text="THREES GAME", font="arial 30 bold", fg="black")
+        titulo_programa.place(x=200, y=20)
 
-        preguntaUser = tk.Label(text="¿Qué modo de juego desea?", font= "arial 15 bold", fg= "black")
-        preguntaUser.place(x= 200, y= 100)
+        preguntaUser = tk.Label(text="¿Qué modo de juego desea?", font="arial 15 bold", fg="black")
+        preguntaUser.place(x=200, y=100)
 
         variable = tk.StringVar(ventana)
         variable.set("Elije el quién va a jugar")  # Etiqueta inicial
 
         inputUser = tk.OptionMenu(ventana, variable, "USER", "IA")
-        inputUser.place(x= 200, y= 150)
+        inputUser.place(x=200, y=150)
 
-        preguntaUser = tk.Label(text="Introduzca una semilla", font= "arial 15 bold", fg= "black")
-        preguntaUser.place(x= 200, y= 200)
+        preguntaSeed = tk.Label(text="Introduzca una semilla", font="arial 15 bold", fg="black")
+        preguntaSeed.place(x=200, y=200)
 
-        inputSeed = tk.Entry(ventana, font= "arial 15 bold")
-        inputSeed.place(x= 200, y= 250)
-        
-        preguntaUser = tk.Label(text="¿Qué algoritmo desea utilizar?", font= "arial 15 bold", fg= "black")
-        preguntaUser.place(x= 200, y= 300)
+        inputSeed = tk.Entry(ventana, font="arial 15 bold")
+        inputSeed.place(x=200, y=250)
 
+        # Inicializamos variableAlgorithm aquí para que sea accesible desde cualquier función
         variableAlgorithm = tk.StringVar(ventana)
         variableAlgorithm.set("Elije el algoritmo")
 
-        inputAlgorithm = tk.OptionMenu(ventana, variableAlgorithm, "Depth First Search", "Breadth First Search", "A*")
-        inputAlgorithm.place(x= 200, y= 350)
+        # Lugar donde agregaremos dinámicamente el menú de algoritmos
+        preguntaAlgorithm = None
+        inputAlgorithm = None
 
-        seed = None
-        game_mode = None
-        algorithm = None
+        def update_algorithm_menu(*args):
+            nonlocal preguntaAlgorithm, inputAlgorithm
+
+            # Si el usuario elige "IA", mostramos el menú de algoritmos
+            if variable.get() == "IA":
+                if preguntaAlgorithm is None:
+                    preguntaAlgorithm = tk.Label(text="¿Qué algoritmo desea utilizar?", font="arial 15 bold", fg="black")
+                    preguntaAlgorithm.place(x=200, y=300)
+
+                if inputAlgorithm is None:
+                    inputAlgorithm = tk.OptionMenu(ventana, variableAlgorithm, "Depth First Search", "Breadth First Search", "A*")
+                    inputAlgorithm.place(x=200, y=350)
+            else:
+                # Si se elige "USER", eliminamos el menú de algoritmos (si está visible)
+                if preguntaAlgorithm is not None:
+                    preguntaAlgorithm.place_forget()
+                    preguntaAlgorithm = None
+
+                if inputAlgorithm is not None:
+                    inputAlgorithm.place_forget()
+                    inputAlgorithm = None
+
+        # Actualizar el menú de algoritmos cuando cambie la selección del modo de juego
+        variable.trace('w', update_algorithm_menu)
 
         def startGame():
             seed = inputSeed.get()
             game_mode_aux = variable.get()
+
+            # Obtener el modo de juego
             if game_mode_aux == "USER":
                 game_mode = GAME_MODES.USER
+                algorithm = None
             else:
                 game_mode = GAME_MODES.IA
-
-            algorithm_aux = variableAlgorithm.get()
-            if algorithm_aux == "Depth First Search":
-                algorithm = ALGORITHMS.DEPTH_FIRST_SEARCH
-            elif algorithm_aux == "Breadth First Search":
-                algorithm = ALGORITHMS.BREADTH_FIRST_SEARCH
-            else:
-                algorithm = ALGORITHMS.A_STAR
+                algorithm_aux = variableAlgorithm.get()  # Ahora variableAlgorithm está definido globalmente
+                if algorithm_aux == "Depth First Search":
+                    algorithm = ALGORITHMS.DEPTH_FIRST_SEARCH
+                elif algorithm_aux == "Breadth First Search":
+                    algorithm = ALGORITHMS.BREADTH_FIRST_SEARCH
+                else:
+                    algorithm = ALGORITHMS.A_STAR
+            
+            print(f"Los parametros de juegos seleccionados son: {game_mode}, {seed}, {algorithm}")
 
             ventana.destroy()
 
             ThreeGame(seed=seed, game_mode=game_mode, alg=algorithm).run()
-        
+
         boton = tk.Button(
             text="Comenzar Juego",
-            command= startGame,
+            command=startGame,
             bg="#4CAF50",  # Background color
-            fg="white",    # Text color
+            fg="white",  # Text color
             font=("Arial", 14, "bold"),  # Font
             padx=20,  # Padding X
-            pady=10   # Padding Y
+            pady=10  # Padding Y
         )
-        boton.place(x= 200, y= 400)
-        
+        boton.place(x=200, y=400)
+
         ventana.mainloop()
-    
-
-
