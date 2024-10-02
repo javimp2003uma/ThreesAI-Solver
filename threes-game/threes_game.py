@@ -5,6 +5,7 @@ from state import State
 from algorithms import DepthFirstSearch, BreadthFirstSearch, AStar
 
 import tkinter as tk
+from structures.node import Node
 
 BACKGROUND_COLOR = (187, 173, 160)
 CELL_COLOR = (204, 192, 179)
@@ -170,7 +171,15 @@ class ThreeGame:
 
                 self.draw_grid()
         else:
-            print("No se puede ejecutar el modo IA aun. Lo estamos desarrollando.")
+            if self.algorithm == ALGORITHMS.A_STAR:
+                algorithm = ALGORITHM_CLASSES[self.algorithm](self.state)
+            elif self.algorithm == ALGORITHMS.BREADTH_FIRST_SEARCH:
+                algorithm = ALGORITHM_CLASSES[self.algorithm](self.state)
+            elif self.algorithm == ALGORITHMS.DEPTH_FIRST_SEARCH:
+                algorithm = ALGORITHM_CLASSES[self.algorithm](Node(self.state, None, None))
+                path = algorithm.get_next_move()
+
+                print(path)
         
 
         pygame.quit()
