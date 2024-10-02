@@ -79,16 +79,23 @@ class State:
                 self.has_merged[new_r][new_c] = 1  # Marcar como fusionado
 
     def completedState(self):
-        allZeros = False
+        # Check if there's any empty space
         for r in range(self.size):
             for c in range(self.size):
                 if self.grid[r][c] == 0:
-                    allZeros = True
-        if allZeros:
-            for r in range(self.size):
-                for c in range(self.size):
-                    # complete the code
-                    pass
+                    return False  # There's an empty cell, so the game is not over
+
+        # Check if there's any possible merge
+        for r in range(self.size):
+            for c in range(self.size):
+                # Check right and down only to avoid redundant checks
+                if c + 1 < self.size and self.can_merge(self.grid[r][c], self.grid[r][c + 1]):
+                    return False  # A merge is possible to the right
+                if r + 1 < self.size and self.can_merge(self.grid[r][c], self.grid[r + 1][c]):
+                    return False  # A merge is possible downward
+
+        # No empty spaces and no possible merges
+        return True
 
     # Reglas de fusión (1 + 2, 2 + 1, o n + n si n >= 3)
     def can_merge(self, a, b):

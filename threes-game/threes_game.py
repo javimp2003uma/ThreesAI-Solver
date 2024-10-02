@@ -46,7 +46,6 @@ class ThreeGame:
         pygame.display.set_caption("Threes Game") 
 
 
-    
     def draw_grid(self):
         self.screen.fill(BACKGROUND_COLOR)
         for r in range(self.size):
@@ -62,8 +61,15 @@ class ThreeGame:
                     self.screen.blit(text_surface, text_rect)
 
         pygame.display.flip()
+    
+    def mostrarErrorVentana(self):
+        // complete
         
+
     def run(self):
+
+        print(f"Running the game with parameters: {self.seed}, {self.game_mode}, {self.algorithm}")
+
         MOVES = {
             pygame.K_LEFT: self.state.move_left,
             pygame.K_RIGHT: self.state.move_right,
@@ -72,8 +78,10 @@ class ThreeGame:
         }
 
         running = True
-        while running:
-            if self.game_mode == GAME_MODES.USER:
+        if self.game_mode == GAME_MODES.USER:
+
+            while running:
+                
                 for event in pygame.event.get():
                     if event.type == pygame.QUIT:
                         running = False
@@ -84,13 +92,13 @@ class ThreeGame:
                             move_func()
 
                             if self.state.completedState():
-                                print("Game Over")
+                                self.mostrarErrorVentana()
                                 running = False
 
-            elif self.game_mode == GAME_MODES.IA:
-                pass
-
-            self.draw_grid()
+                self.draw_grid()
+        else:
+            print("No se puede ejecutar el modo IA aun. Lo estamos desarrollando.")
+        
 
         pygame.quit()
 
