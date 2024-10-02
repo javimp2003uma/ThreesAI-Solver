@@ -4,6 +4,10 @@ import pygame
 from state import State
 from algorithms import DepthFirstSearch, BreadthFirstSearch, AStar
 
+import tkinter as tk
+from tkinter import font
+from PIL import ImageFont, ImageDraw, Image, ImageTk
+
 BACKGROUND_COLOR = (187, 173, 160)
 CELL_COLOR = (204, 192, 179)
 TEXT_COLOR = (119, 110, 101)
@@ -27,11 +31,15 @@ ALGORITHM_CLASSES = {
 
 class ThreeGame:
     
-    def __init__(self, size=4):
+    def __init__(self, seed, game_mode, alg, size=4):
         pygame.init()
 
+        self.seed = seed
+        self.game_mode = game_mode
+
         self.size = size
-        self.seed, self.game_mode, self.algorithm = self.askForParameters()
+        self.algorithm = alg
+        #self.seed, self.game_mode, self.algorithm = self.askForParameters()
 
         self.state = State(self.seed)
 
@@ -39,95 +47,6 @@ class ThreeGame:
         self.font = pygame.font.Font(None, 55)
         pygame.display.set_caption("Threes Game") 
 
-    def askForParameters(self):
-        
-        screen = pygame.display.set_mode((700,700))
-        font = pygame.font.Font(None, 25)
-        pygame.display.set_caption("Threes Game") 
-        
-        seed = 0
-        game_mode = GAME_MODES.USER
-        algorithm = ALGORITHMS.DEPTH_FIRST_SEARCH  # Default value
-
-        input_box_seed = pygame.Rect(50, 50, 140, 32)
-        input_box_algorithm = pygame.Rect(50, 150, 140, 32)
-        input_box_mode = pygame.Rect(50, 250, 140, 32)
-        
-        color_inactive = pygame.Color('lightskyblue3')
-        color_active = pygame.Color('dodgerblue2')
-        color = color_inactive
-        active = False
-        text = ''
-        
-        running = True
-        while running:
-            for event in pygame.event.get():
-                if event.type == pygame.QUIT:
-                    running = False
-                    
-                if event.type == pygame.MOUSEBUTTONDOWN:
-                    if input_box_seed.collidepoint(event.pos):
-                        active = not active
-                    else:
-                        active = False
-                    color = color_active if active else color_inactive
-
-                if event.type == pygame.KEYDOWN:
-                    if active:
-                        if event.key == pygame.K_RETURN:
-                            try:
-                                seed = int(text)  # Convert to integer when the user presses enter
-                                text = ''  # Clear the input box
-                            except ValueError:
-                                text = 'Invalid input'
-                        elif event.key == pygame.K_BACKSPACE:
-                            text = text[:-1]
-                        else:
-                            text += event.unicode
-                
-                # Selecting game mode
-                if event.type == pygame.KEYDOWN:
-                    if event.key == pygame.K_1:
-                        game_mode = GAME_MODES.USER
-                    elif event.key == pygame.K_2:
-                        game_mode = GAME_MODES.IA
-
-                # Selecting algorithm
-                if event.type == pygame.KEYDOWN:
-                    if event.key == pygame.K_a:
-                        algorithm = ALGORITHMS.A_STAR
-                    elif event.key == pygame.K_b:
-                        algorithm = ALGORITHMS.BREADTH_FIRST_SEARCH
-                    elif event.key == pygame.K_d:
-                        algorithm = ALGORITHMS.DEPTH_FIRST_SEARCH
-
-            screen.fill(BACKGROUND_COLOR)
-            
-            # Render input box for seed
-            txt_surface = font.render(text, True, color)
-            width = max(200, txt_surface.get_width()+10)
-            input_box_seed.w = width
-            screen.blit(txt_surface, (input_box_seed.x + 5, input_box_seed.y + 5))
-            pygame.draw.rect(screen, color, input_box_seed, 2)
-
-            # Instructions for game mode
-            mode_text = font.render("Press 1 for User or 2 for IA", True, TEXT_COLOR)
-            screen.blit(mode_text, (50, 100))
-
-            # Instructions for algorithm
-            algo_text = font.render("Press A for A*, B for BFS, D for DFS", True, TEXT_COLOR)
-            screen.blit(algo_text, (50, 200))
-
-            # Draw the selected game mode and algorithm
-            selected_mode_text = font.render(f"Mode: {game_mode.name}", True, TEXT_COLOR)
-            screen.blit(selected_mode_text, (50, 300))
-
-            selected_algo_text = font.render(f"Algorithm: {algorithm.name}", True, TEXT_COLOR)
-            screen.blit(selected_algo_text, (50, 350))
-
-            pygame.display.flip()
-
-        return seed, game_mode, algorithm
 
     
     def draw_grid(self):
@@ -181,3 +100,78 @@ if __name__ == "__main__":
     
     game = ThreeGame()
     game.run()
+
+class QuestionUI:
+    def run():
+        ventana = tk.Tk()
+        ventana.title("THREES by Los Monotonos")
+        ventana.config(width=675, height= 600)
+        ventana.resizable(False, False)
+
+    
+        titulo_programa = tk.Label(text="THREES GAME", font= "arial 30 bold", fg= "black")
+        titulo_programa.place(x= 200, y= 20)
+
+        preguntaUser = tk.Label(text="¿Qué modo de juego desea?", font= "arial 15 bold", fg= "black")
+        preguntaUser.place(x= 200, y= 100)
+
+        variable = tk.StringVar(ventana)
+        variable.set("Elije el quién va a jugar")  # Etiqueta inicial
+
+        inputUser = tk.OptionMenu(ventana, variable, "USER", "IA")
+        inputUser.place(x= 200, y= 150)
+
+        preguntaUser = tk.Label(text="Introduzca una semilla", font= "arial 15 bold", fg= "black")
+        preguntaUser.place(x= 200, y= 200)
+
+        inputSeed = tk.Entry(ventana, font= "arial 15 bold")
+        inputSeed.place(x= 200, y= 250)
+        
+        preguntaUser = tk.Label(text="¿Qué algoritmo desea utilizar?", font= "arial 15 bold", fg= "black")
+        preguntaUser.place(x= 200, y= 300)
+
+        variableAlgorithm = tk.StringVar(ventana)
+        variableAlgorithm.set("Elije el algoritmo")
+
+        inputAlgorithm = tk.OptionMenu(ventana, variableAlgorithm, "Depth First Search", "Breadth First Search", "A*")
+        inputAlgorithm.place(x= 200, y= 350)
+
+        seed = None
+        game_mode = None
+        algorithm = None
+
+        def startGame():
+            seed = inputSeed.get()
+            game_mode_aux = variable.get()
+            if game_mode_aux == "USER":
+                game_mode = GAME_MODES.USER
+            else:
+                game_mode = GAME_MODES.IA
+
+            algorithm_aux = variableAlgorithm.get()
+            if algorithm_aux == "Depth First Search":
+                algorithm = ALGORITHMS.DEPTH_FIRST_SEARCH
+            elif algorithm_aux == "Breadth First Search":
+                algorithm = ALGORITHMS.BREADTH_FIRST_SEARCH
+            else:
+                algorithm = ALGORITHMS.A_STAR
+
+            ventana.destroy()
+
+            ThreeGame(seed=seed, game_mode=game_mode, alg=algorithm).run()
+        
+        boton = tk.Button(
+            text="Comenzar Juego",
+            command= startGame,
+            bg="#4CAF50",  # Background color
+            fg="white",    # Text color
+            font=("Arial", 14, "bold"),  # Font
+            padx=20,  # Padding X
+            pady=10   # Padding Y
+        )
+        boton.place(x= 200, y= 400)
+        
+        ventana.mainloop()
+    
+
+

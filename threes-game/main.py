@@ -1,3 +1,5 @@
 from threes_game import ThreeGame
+from threes_game import QuestionUI
 
-ThreeGame()
+seed, game_mode, alg = QuestionUI.run()
+
