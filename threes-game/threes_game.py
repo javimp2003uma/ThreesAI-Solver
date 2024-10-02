@@ -51,6 +51,7 @@ class ThreeGame:
         self.font = pygame.font.Font(None, 55)
         pygame.display.set_caption("Threes Game") 
 
+        self.draw_grid()
 
     def draw_grid(self):
         self.screen.fill(BACKGROUND_COLOR)
@@ -147,7 +148,7 @@ class ThreeGame:
 
     def run(self):
         print(f"Running the game with parameters: {self.seed}, {self.game_mode}, {self.algorithm}")
-
+        
         MOVES = {
             pygame.K_LEFT: self.state.move_left,
             pygame.K_RIGHT: self.state.move_right,
