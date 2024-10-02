@@ -1,3 +1,3 @@
-from estado import ThreeGame
+from threes_game import ThreeGame
 
 ThreeGame()

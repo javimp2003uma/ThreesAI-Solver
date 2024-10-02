@@ -3,7 +3,7 @@ import numpy as np
 import random as rnd
 import pygame
 
-#from algorithms import DepthFirstSearch, BreadFirstSearch, AStar
+from algorithms import DepthFirstSearch, BreadFirstSearch, AStar
 
 BACKGROUND_COLOR = (187, 173, 160)
 CELL_COLOR = (204, 192, 179)

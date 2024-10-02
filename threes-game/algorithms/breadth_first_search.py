@@ -1,4 +1,4 @@
-from search_algorithm import SearchAlgorithm
+from .search_algorithm import SearchAlgorithm
 
 class BreadFirstSearch(SearchAlgorithm):
 
