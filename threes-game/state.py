@@ -25,6 +25,12 @@ class State:
         self.grid = np.array(grid_array)
         self.has_merged = np.zeros_like(self.grid)
     
+    def clone_state(self):
+        state = State(self.seed, self.size)
+        state.grid = np.array(self.grid)
+        state.has_merged = self.has_merged
+        return state
+
     # Función para mover la cuadrícula hacia la izquierda
     def move_left(self):
         self.has_merged.fill(0)
