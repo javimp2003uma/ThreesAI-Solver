@@ -63,7 +63,7 @@ class ThreeGame:
         pygame.display.flip()
     
     def mostrarErrorVentana(self):
-        // complete
+        pass
         
 
     def run(self):
