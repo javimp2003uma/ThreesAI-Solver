@@ -97,6 +97,7 @@ class Estado:
             for r in range(GRID_SIZE):
                 for c in range(GRID_SIZE):
                     # complete the code
+                    pass
 
     # Reglas de fusión (1 + 2, 2 + 1, o n + n si n >= 3)
     def can_merge(self, a, b):
