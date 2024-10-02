@@ -1,5 +1,6 @@
 from .search_algorithm import SearchAlgorithm
 from state import State
+import pygame
 
 class Node:
     def __init__(self, value: State, move_to_node=None, father=None):
@@ -19,12 +20,24 @@ class Node:
         return [] if self.father is None else self.father.moves_list() + [self.move_to_node]
 
     def sucesores(self): # No se si funciona bien
-        move_left_state = Node(self.value.clone_state().move_left(), "a")
-        move_right_state = Node(self.value.clone_state().move_right(), "d")
-        move_up_state = Node(self.value.clone_state().move_up(), "w")
-        move_down_state = Node(self.value.clone_state().move_down(), "s")
+        move_left_state = self.value.clone_state()
+        move_left_state.move_left()
 
-        possible_moves = [move_left_state, move_right_state, move_up_state, move_down_state]
+        move_right_state = self.value.clone_state()
+        move_right_state.move_right()
+
+        move_up_state = self.value.clone_state()
+        move_up_state.move_up()
+
+        move_down_state = self.value.clone_state()
+        move_down_state.move_down()
+
+        move_left_node = Node(move_left_state, pygame.K_LEFT)
+        move_right_node = Node(move_right_state, pygame.K_RIGHT)
+        move_up_node = Node(move_up_state, pygame.K_UP)
+        move_down_node = Node(move_down_state, pygame.K_DOWN)
+
+        possible_moves = [move_left_node, move_right_node, move_up_node, move_down_node]
         valid_moves = [move for move in possible_moves if move != self.value]
         unique_moves = list(set(valid_moves))
 
@@ -42,8 +55,8 @@ class Node:
 
 class BreadthFirstSearch(SearchAlgorithm):
 
-    def __init__(self, initial_state):
-        self.path, self.moves_list = self.run_algorithm(initial_state)
+    def __init__(self, initial_state : State):
+        self.result, self.path, self.moves_list = self.run_algorithm(initial_state.clone_state())
         self.it = 0
 
     def run_algorithm(self, s): # se q se puede refactorizar pila, lo estoy haciendo literalmente como el pseudocodigo primero
@@ -54,13 +67,13 @@ class BreadthFirstSearch(SearchAlgorithm):
 
         while True:
             if ABIERTOS == []: # 3. Si abiertos esta vacia devolver fracaso
-                return "FRACASO"
-            
+                return "FRACASO", [], []
+
             n = ABIERTOS.pop() # 4. Seleccionar primero de abiertos y borrarlo de abiertos
             CERRADOS.append(n) # 4. añadirlo a cerrados
 
             if n.value.completedState(): # 5. Si n es objetivo devolvemos el camino de s hasta n en A
-                return n.antecesores() + [n.value], n.moves_list()
+                return "ÉXITO", n.antecesores() + [n.value], n.moves_list()
             
             M = n.sucesores_sin_antecesores() # 6. Expandimos n
 
@@ -76,7 +89,7 @@ class BreadthFirstSearch(SearchAlgorithm):
 
 
     def get_next_move(self):
-        if self.path != "FRACASO":
+        if self.result != "FRACASO" and self.it < len(self.moves_list):
             next_move = self.moves_list[self.it]
             self.it = self.it + 1
             return next_move

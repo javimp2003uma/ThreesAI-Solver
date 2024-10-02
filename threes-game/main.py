@@ -1,4 +1,3 @@
-from threes_game import ThreeGame
 from threes_game import QuestionUI
 
 try:

@@ -2,10 +2,10 @@ from enum import Enum
 import pygame
 
 from state import State
-from algorithms import DepthFirstSearch, BreadthFirstSearch, AStar
+from algorithms import BreadthFirstSearch, AStar # he quitao el depth por que no compilaba
 
 import tkinter as tk
-from structures.node import Node
+import time
 
 BACKGROUND_COLOR = (187, 173, 160)
 CELL_COLOR = (204, 192, 179)
@@ -23,9 +23,15 @@ class ALGORITHMS(Enum):
     A_STAR = 2
 
 ALGORITHM_CLASSES = {
-    ALGORITHMS.DEPTH_FIRST_SEARCH: DepthFirstSearch,
     ALGORITHMS.BREADTH_FIRST_SEARCH: BreadthFirstSearch,
     ALGORITHMS.A_STAR: AStar
+}
+
+TRANSLATE_MOVES = {
+    pygame.K_LEFT: "LEFT",
+    pygame.K_RIGHT: "RIGHT",
+    pygame.K_UP: "UP",
+    pygame.K_DOWN: "DOWN"
 }
 
 class ThreeGame:
@@ -35,12 +41,13 @@ class ThreeGame:
 
         self.seed = seed
         self.game_mode = game_mode
-
+        
         self.size = size
         self.algorithm = alg
-        #self.seed, self.game_mode, self.algorithm = self.askForParameters()
 
         self.state = State(self.seed)
+        self.algorithm_class = ALGORITHM_CLASSES[self.algorithm](self.state)
+        print([TRANSLATE_MOVES[move] for move in self.algorithm_class.moves_list])
 
         self.screen = pygame.display.set_mode((self.size * (CELL_SIZE + MARGIN), self.size * (CELL_SIZE + MARGIN)))
         self.font = pygame.font.Font(None, 55)
@@ -151,8 +158,8 @@ class ThreeGame:
         }
 
         running = True
-        if self.game_mode == GAME_MODES.USER:
-            while running:
+        while running:
+            if self.game_mode == GAME_MODES.USER:
                 for event in pygame.event.get():
                     if event.type == pygame.QUIT:
                         running = False
@@ -167,20 +174,18 @@ class ThreeGame:
                                 running = False
 
                 self.draw_grid()
-        else:
-            if self.algorithm == ALGORITHMS.A_STAR:
-                algorithm = ALGORITHM_CLASSES[self.algorithm](self.state)
-            elif self.algorithm == ALGORITHMS.BREADTH_FIRST_SEARCH:
-                algorithm = ALGORITHM_CLASSES[self.algorithm](self.state)
-                print(algorithm.moves_list)
-            elif self.algorithm == ALGORITHMS.DEPTH_FIRST_SEARCH:
-                algorithm = ALGORITHM_CLASSES[self.algorithm](Node(self.state, None, None))
-                path = algorithm.get_next_move()
+            else:
+                time.sleep(0.25) # Frecuencia de la IA
 
-                print(path)
-        
+                next_move = self.algorithm_class.get_next_move()
+                move_func = MOVES[next_move]
+                move_func()
 
-        pygame.quit()
+                if self.state.completedState():
+                    self.mostrarErrorVentana()
+                    running = False
+
+                self.draw_grid()
 
 if __name__ == "__main__":
     

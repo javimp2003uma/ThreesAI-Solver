@@ -29,10 +29,10 @@ class State:
     def __eq__(self, other):
         if not isinstance(other, State):
             return False
-        return self.grid == other.grid  # Compara los valores que determinan la equivalencia
+        return np.array_equal(self.grid, other.grid)  # Compara los valores que determinan la equivalencia
 
     def __hash__(self):
-        return hash(self.grid)  # Devuelve el hash del valor
+        return hash(self.grid.tobytes())  # Devuelve el hash del valor
 
     def clone_state(self):
         state = State(self.seed, self.size)
