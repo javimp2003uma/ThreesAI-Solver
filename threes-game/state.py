@@ -26,6 +26,14 @@ class State:
         self.grid = np.array(grid_array)
         self.has_merged = np.zeros_like(self.grid)
     
+    def __eq__(self, other):
+        if not isinstance(other, State):
+            return False
+        return self.grid == other.grid  # Compara los valores que determinan la equivalencia
+
+    def __hash__(self):
+        return hash(self.grid)  # Devuelve el hash del valor
+
     def clone_state(self):
         state = State(self.seed, self.size)
         state.grid = np.array(self.grid)
