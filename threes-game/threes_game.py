@@ -172,7 +172,7 @@ class ThreeGame:
                 self.draw_grid()
         else:
             if self.algorithm == ALGORITHMS.A_STAR:
-                algorithm = ALGORITHM_CLASSES[self.algorithm](self.state)
+                algorithm = ALGORITHM_CLASSES[self.algorithm](self.state)f
             elif self.algorithm == ALGORITHMS.BREADTH_FIRST_SEARCH:
                 algorithm = ALGORITHM_CLASSES[self.algorithm](self.state)
             elif self.algorithm == ALGORITHMS.DEPTH_FIRST_SEARCH:
