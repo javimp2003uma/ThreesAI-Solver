@@ -1,5 +1,6 @@
 import numpy as np
 import random as rnd
+import math
 
 class State:
     def __init__(self, seed, size=4):
@@ -111,3 +112,10 @@ class State:
         if empty_cells:
             row, col = rnd.choice(empty_cells)
             self.grid[row][col] = rnd.choice([1, 2, 3])  # Insertar ficha aleatoria
+        
+    def contarPuntosTotales(self):
+        total = 0
+        for r in range(self.size):
+            for c in range(self.size):
+                total += 3 ** (1 + math.log2(self.grid[r][c] / 3))
+        return total

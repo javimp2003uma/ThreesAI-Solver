@@ -63,8 +63,81 @@ class ThreeGame:
         pygame.display.flip()
     
     def mostrarErrorVentana(self):
-        pass
-        
+        # Borrar el contenido de la pantalla
+        self.screen.fill(BACKGROUND_COLOR)  # Limpia el fondo de la pantalla
+
+        # Crear una nueva fuente para el mensaje de error
+        font = pygame.font.Font(None, 25)  # Ajusta el tamaño según sea necesario
+
+        # Renderizar las líneas de texto
+        puntosTotales = self.state.contarPuntosTotales()
+        line1 = font.render("Juego Terminado", True, TEXT_COLOR)
+        line2 = font.render(f"Has logrado un total de {puntosTotales} puntos", True, TEXT_COLOR)
+
+        # Obtener el rectángulo para centrar el texto
+        rect1 = line1.get_rect(center=(self.size * (CELL_SIZE + MARGIN) // 2, 
+                                        self.size * (CELL_SIZE + MARGIN) // 2 - 20))  # Ajusta la posición vertical
+        rect2 = line2.get_rect(center=(self.size * (CELL_SIZE + MARGIN) // 2, 
+                                        self.size * (CELL_SIZE + MARGIN) // 2 + 20))  # Ajusta la posición vertical
+
+        # Dibujar el texto en la pantalla
+        self.screen.blit(line1, rect1)
+        self.screen.blit(line2, rect2)
+
+        pygame.display.flip()  # Actualiza la pantalla para mostrar el mensaje
+
+        # Bucle para esperar hasta que se cierre la ventana
+        waiting = True
+        while waiting:
+            for event in pygame.event.get():
+                if event.type == pygame.QUIT:
+                    waiting = False
+
+    
+    def mostrarErrorVentana(self):
+        # Borrar el contenido de la pantalla
+        self.screen.fill(BACKGROUND_COLOR)  # Limpia el fondo de la pantalla
+
+        # Crear una nueva fuente para el mensaje de error
+        font = pygame.font.Font(None, 34)  # Ajusta el tamaño según sea necesario
+
+        # Renderizar las líneas de texto
+        puntosTotales = round(self.state.contarPuntosTotales(),2)
+        line1 = font.render("Juego Terminado", True, (255, 0, 0))  # Rojo
+        line2 = font.render(f"Has logrado un total de {puntosTotales} puntos", True, (255, 0, 0))  # Rojo
+
+        # Obtener el rectángulo para centrar el texto
+        rect1 = line1.get_rect(center=(self.size * (CELL_SIZE + MARGIN) // 2, 
+                                        self.size * (CELL_SIZE + MARGIN) // 2 - 20))  # Ajusta la posición vertical
+        rect2 = line2.get_rect(center=(self.size * (CELL_SIZE + MARGIN) // 2, 
+                                        self.size * (CELL_SIZE + MARGIN) // 2 + 20))  # Ajusta la posición vertical
+
+        # Bucle para esperar hasta que se cierre la ventana
+        waiting = True
+        blink_timer = 0  # Temporizador para el parpadeo
+        show_text = True  # Variable para mostrar/ocultar el texto
+
+        while waiting:
+            for event in pygame.event.get():
+                if event.type == pygame.QUIT:
+                    waiting = False
+
+            # Actualizar el temporizador y alternar la visibilidad del texto
+            blink_timer += 1
+            if blink_timer % 5 == 0:  # Cambia la velocidad del parpadeo aquí
+                show_text = not show_text
+
+            # Borrar el fondo
+            self.screen.fill(BACKGROUND_COLOR)
+
+            # Dibujar el texto en la pantalla si show_text es True
+            if show_text:
+                self.screen.blit(line1, rect1)
+                self.screen.blit(line2, rect2)
+
+            pygame.display.flip()  # Actualiza la pantalla para mostrar el mensaje
+            pygame.time.delay(100)
+
 
     def run(self):
 
