@@ -46,8 +46,6 @@ class ThreeGame:
         self.algorithm = alg
 
         self.state = State(self.seed)
-        self.algorithm_class = ALGORITHM_CLASSES[self.algorithm](self.state)
-        print([TRANSLATE_MOVES[move] for move in self.algorithm_class.moves_list])
 
         self.screen = pygame.display.set_mode((self.size * (CELL_SIZE + MARGIN), self.size * (CELL_SIZE + MARGIN)))
         self.font = pygame.font.Font(None, 55)
@@ -158,15 +156,15 @@ class ThreeGame:
         }
 
         running = True
-        while running:
-            if self.game_mode == GAME_MODES.USER:
+        if self.game_mode == GAME_MODES.USER:
+            while running:
                 for event in pygame.event.get():
                     if event.type == pygame.QUIT:
                         running = False
 
                     if event.type == pygame.KEYDOWN:
-                        move_func = MOVES[event.key]
-                        if move_func is not None:
+                        if event.key in MOVES.keys():
+                            move_func = MOVES[event.key]
                             move_func()
                             
                             if self.state.completedState():
@@ -174,10 +172,14 @@ class ThreeGame:
                                 running = False
 
                 self.draw_grid()
-            else:
+        elif self.game_mode == GAME_MODES.IA:
+            algorithm_class = ALGORITHM_CLASSES[self.algorithm](self.state)
+            print(f"Secuencia de movimientos hasta el camino óptimo: {[TRANSLATE_MOVES[move] for move in algorithm_class.moves_list]}")
+
+            while running:
                 time.sleep(0.25) # Frecuencia de la IA
 
-                next_move = self.algorithm_class.get_next_move()
+                next_move = algorithm_class.get_next_move()
                 move_func = MOVES[next_move]
                 move_func()
 
