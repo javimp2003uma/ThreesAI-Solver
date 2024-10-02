@@ -141,7 +141,6 @@ class ThreeGame:
 
 
     def run(self):
-
         print(f"Running the game with parameters: {self.seed}, {self.game_mode}, {self.algorithm}")
 
         MOVES = {
@@ -153,9 +152,7 @@ class ThreeGame:
 
         running = True
         if self.game_mode == GAME_MODES.USER:
-
             while running:
-                
                 for event in pygame.event.get():
                     if event.type == pygame.QUIT:
                         running = False
@@ -164,7 +161,7 @@ class ThreeGame:
                         move_func = MOVES[event.key]
                         if move_func is not None:
                             move_func()
-
+                            
                             if self.state.completedState():
                                 self.mostrarErrorVentana()
                                 running = False
@@ -175,6 +172,7 @@ class ThreeGame:
                 algorithm = ALGORITHM_CLASSES[self.algorithm](self.state)
             elif self.algorithm == ALGORITHMS.BREADTH_FIRST_SEARCH:
                 algorithm = ALGORITHM_CLASSES[self.algorithm](self.state)
+                print(algorithm.moves_list)
             elif self.algorithm == ALGORITHMS.DEPTH_FIRST_SEARCH:
                 algorithm = ALGORITHM_CLASSES[self.algorithm](Node(self.state, None, None))
                 path = algorithm.get_next_move()
