@@ -72,44 +72,14 @@ class ThreeGame:
                 pygame.draw.rect(self.screen, color, (c * (CELL_SIZE + MARGIN), r * (CELL_SIZE + MARGIN), CELL_SIZE, CELL_SIZE))
                 
                 if value != 0:
-                    text_surface = self.font.render(str(value), True, TEXT_COLOR_LIGHT if value <= 2 else TEXT_COLOR_DARK)
+                    text_surface = self.font.render(str(value), True, TEXT_COLOR_LIGHT if value <= 2 or value > 40 else TEXT_COLOR_DARK)
                     text_rect = text_surface.get_rect(center=(c * (CELL_SIZE + MARGIN) + CELL_SIZE // 2,
                                                               r * (CELL_SIZE + MARGIN) + CELL_SIZE // 2))
                     self.screen.blit(text_surface, text_rect)
 
         pygame.display.flip()
     
-    def mostrarErrorVentana(self):
-        # Borrar el contenido de la pantalla
-        self.screen.fill(BACKGROUND_COLOR)  # Limpia el fondo de la pantalla
-
-        # Crear una nueva fuente para el mensaje de error
-        font = pygame.font.Font(None, 25)  # Ajusta el tamaño según sea necesario
-
-        # Renderizar las líneas de texto
-        puntosTotales = self.state.total_points()
-        line1 = font.render("Juego Terminado", True, TEXT_COLOR)
-        line2 = font.render(f"Has logrado un total de {puntosTotales} puntos", True, TEXT_COLOR)
-
-        # Obtener el rectángulo para centrar el texto
-        rect1 = line1.get_rect(center=(self.size * (CELL_SIZE + MARGIN) // 2, 
-                                        self.size * (CELL_SIZE + MARGIN) // 2 - 20))  # Ajusta la posición vertical
-        rect2 = line2.get_rect(center=(self.size * (CELL_SIZE + MARGIN) // 2, 
-                                        self.size * (CELL_SIZE + MARGIN) // 2 + 20))  # Ajusta la posición vertical
-
-        # Dibujar el texto en la pantalla
-        self.screen.blit(line1, rect1)
-        self.screen.blit(line2, rect2)
-
-        pygame.display.flip()  # Actualiza la pantalla para mostrar el mensaje
-
-        # Bucle para esperar hasta que se cierre la ventana
-        waiting = True
-        while waiting:
-            for event in pygame.event.get():
-                if event.type == pygame.QUIT:
-                    waiting = False
-
+    
     def mostrarErrorVentana(self):
         # Borrar el contenido de la pantalla
         self.screen.fill(BACKGROUND_COLOR)  # Limpia el fondo de la pantalla
@@ -119,8 +89,8 @@ class ThreeGame:
 
         # Renderizar las líneas de texto
         puntosTotales = round(self.state.total_points(),2)
-        line1 = font.render("Juego Terminado", True, (255, 0, 0))  # Rojo
-        line2 = font.render(f"Has logrado un total de {puntosTotales} puntos", True, (255, 0, 0))  # Rojo
+        line1 = font.render("Juego Terminado", True, TEXT_COLOR_DARK)
+        line2 = font.render(f"Has logrado un total de {puntosTotales} puntos", True, TEXT_COLOR_DARK)
 
         # Obtener el rectángulo para centrar el texto
         rect1 = line1.get_rect(center=(self.size * (CELL_SIZE + MARGIN) // 2, 
