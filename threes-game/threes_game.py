@@ -147,22 +147,30 @@ class ThreeGame:
                 self.draw_grid()
         elif self.game_mode == GAME_MODES.IA:
             algorithm_class = ALGORITHM_CLASSES[self.algorithm](self.state)
-            print(f"Secuencia de movimientos hasta el camino óptimo:\n {[TRANSLATE_MOVES[move] for move in algorithm_class.moves_list]}")
+            # print(f"Secuencia de movimientos hasta el camino óptimo:\n {[TRANSLATE_MOVES[move] for move in algorithm_class.moves_list]}")
+            # hablar con el profe lo de arriba porque vaya mierdon lo del random
 
             while running:
                 time.sleep(0.25) # Frecuencia de la IA
 
-                next_move = algorithm_class.get_next_move()
-                print(f"({algorithm_class.it}/{len(algorithm_class.moves_list)}) IA Mueve: {TRANSLATE_MOVES[next_move]}")
+                #next_move = algorithm_class.get_next_move()
+                #print(f"({algorithm_class.it}/{len(algorithm_class.moves_list)}) IA Mueve: {TRANSLATE_MOVES[next_move]}")
 
-                move_func = MOVES[next_move]
-                move_func()
+                #move_func = MOVES[next_move]
+                #move_func()
 
-                if self.state.completed_state():
+                #if self.state.completed_state():
+                #    self.mostrarErrorVentana()
+                #    running = False
+
+                next_state, next_move = algorithm_class.get_next_state()
+                if next_state is not None:
+                    self.state = next_state
+                    print(f"({algorithm_class.it}/{len(algorithm_class.moves_list)}) IA Mueve: {TRANSLATE_MOVES[next_move]}")
+                    self.draw_grid()
+                else: # Juego terminado
                     self.mostrarErrorVentana()
                     running = False
-
-                self.draw_grid()
 
 if __name__ == "__main__":
     

@@ -25,7 +25,7 @@ class BreadthFirstSearch(SearchAlgorithm):
             print(f"ABIERTOS: {len(ABIERTOS)} | CERRADOS: {len(CERRADOS)} | PROFUNDIDAD: {len(n.antecesores())}")
 
             if n.value.completed_state(): # 5. Si n es objetivo devolvemos el camino de s hasta n en A
-                return "ÉXITO", n.antecesores() + [n.value], n.moves_list()
+                return "ÉXITO", n.antecesores() + [n], n.moves_list()
             
             M = n.sucesores_sin_antecesores() # 6. Expandimos n
 
@@ -40,12 +40,20 @@ class BreadthFirstSearch(SearchAlgorithm):
             # 9. Volvemos a 3 (es un bucle while, ya lo hace)
 
 
-    def get_next_move(self):
-        if self.result != "FRACASO" and self.it < len(self.moves_list):
-            next_move = self.moves_list[self.it]
+    #def get_next_move(self):
+    #    if self.result != "FRACASO" and self.it < len(self.moves_list):
+    #        next_move = self.moves_list[self.it]
+    #        self.it = self.it + 1
+    #        return next_move
+    #    return None
+    
+    def get_next_state(self):
+        if self.result != "FRACASO" and self.it < len(self.path):
+            next_state = self.path[self.it].value
+            next_move = self.moves_list[self.it + 1] # El primer state es el estado inicial
             self.it = self.it + 1
-            return next_move
-        return None
+            return next_state, next_move
+        return None, None
     
 
 class DepthFirstSearch(SearchAlgorithm):
@@ -66,10 +74,11 @@ class DepthFirstSearch(SearchAlgorithm):
 
             n = ABIERTOS.pop() # 4. Seleccionar primero de abiertos y borrarlo de abiertos
             CERRADOS.append(n) # 4. añadirlo a cerrados
+            #print(n.value.grid)
             print(f"ABIERTOS: {len(ABIERTOS)} | CERRADOS: {len(CERRADOS)} | PROFUNDIDAD: {len(n.antecesores())}")
 
             if n.value.completed_state(): # 5. Si n es objetivo devolvemos el camino de s hasta n en A
-                return "ÉXITO", n.antecesores() + [n.value], n.moves_list()
+                return "ÉXITO", n.antecesores() + [n], n.moves_list()
             
             M = n.sucesores_sin_antecesores() # 6. Expandimos n
 
@@ -83,9 +92,17 @@ class DepthFirstSearch(SearchAlgorithm):
             # 8. Ordenamos abiertos por antiguedad (ya estan ordenados por antiguedad)
             # 9. Volvemos a 3 (es un bucle while, ya lo hace)
 
-    def get_next_move(self):
+    #def get_next_move(self):
+    #    if self.result != "FRACASO" and self.it < len(self.moves_list):
+    #        next_move = self.moves_list[self.it]
+    #        self.it = self.it + 1
+    #        return next_move
+    #    return None
+    
+    def get_next_state(self):
         if self.result != "FRACASO" and self.it < len(self.moves_list):
+            next_state = self.path[self.it + 1].value # El primer state es el estado inicial
             next_move = self.moves_list[self.it]
-            self.it += 1
-            return next_move
-        return None
+            self.it = self.it + 1
+            return next_state, next_move
+        return None, None
