@@ -26,36 +26,40 @@ class Node:
     def moves_list(self):
         return [] if self.father is None else self.father.moves_list() + [self.move_to_node]
 
-    def sucesores(self): # No se si funciona bien
-        move_left_state = self.value.clone_state()
-        move_left_state.move_left()
+    def antecesores(self):
+        return [] if self.father is None else self.father.antecesores() + [self.father]
+    
+    def sucesores(self): # Orden de expansion: movimientos ortogonales a sentido horario en los angulos de 90 (los permitidos)
+        move_up_state = self.value.clone_state()
+        move_up_state.move_up()
 
         move_right_state = self.value.clone_state()
         move_right_state.move_right()
 
-        move_up_state = self.value.clone_state()
-        move_up_state.move_up()
-
         move_down_state = self.value.clone_state()
         move_down_state.move_down()
 
-        move_left_node = Node(move_left_state, pygame.K_LEFT)
-        move_right_node = Node(move_right_state, pygame.K_RIGHT)
-        move_up_node = Node(move_up_state, pygame.K_UP)
-        move_down_node = Node(move_down_state, pygame.K_DOWN)
+        move_left_state = self.value.clone_state()
+        move_left_state.move_left()
 
-        possible_moves = [move_left_node, move_right_node, move_up_node, move_down_node]
+        move_up_node = Node(move_up_state, pygame.K_UP)
+        move_right_node = Node(move_right_state, pygame.K_RIGHT)
+        move_down_node = Node(move_down_state, pygame.K_DOWN)
+        move_left_node = Node(move_left_state, pygame.K_LEFT)
+
+        possible_moves = [move_up_node, move_right_node, move_down_node, move_left_node]
         valid_moves = [move for move in possible_moves if move != self.value]
-        unique_moves = list(set(valid_moves))
+        
+        unique_moves = []
+        for move in valid_moves:
+            if move not in unique_moves:
+                unique_moves.append(move)
 
         return unique_moves
 
-    def antecesores(self):
-        return [] if self.father is None else self.father.antecesores() + [self.father]
-
     def sucesores_sin_antecesores(self):
-        sucesores = set(self.sucesores())  
-        antecesores = set(self.antecesores()) 
-        
-        return list(sucesores - antecesores)
-    
+        sucesores = self.sucesores()
+        antecesores = list(self.antecesores())
+
+        return [move for move in sucesores if move not in antecesores]
+
