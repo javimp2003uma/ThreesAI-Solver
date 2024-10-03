@@ -8,8 +8,12 @@ import tkinter as tk
 import time
 
 BACKGROUND_COLOR = (187, 173, 160)
-CELL_COLOR = (204, 192, 179)
-TEXT_COLOR = (119, 110, 101)
+CELL_COLOR_ONES = (241, 103, 128)
+CELL_COLOR_TWOS = (114, 202, 242)
+CELL_COLOR_NUMBER = (255, 255, 255)
+CELL_COLOR_DEFAULT = (219, 247, 255)
+TEXT_COLOR_DARK = (76, 76, 76)
+TEXT_COLOR_LIGHT = (255, 255, 255)
 CELL_SIZE = 100
 MARGIN = 10
 
@@ -59,11 +63,16 @@ class ThreeGame:
         for r in range(self.size):
             for c in range(self.size):
                 value = self.state.grid[r][c]
-                color = CELL_COLOR if value > 0 else BACKGROUND_COLOR
+                color = (
+                            CELL_COLOR_ONES if value == 1 else
+                            CELL_COLOR_TWOS if value == 2 else
+                            CELL_COLOR_NUMBER if value > 2 else
+                            CELL_COLOR_DEFAULT
+                        )
                 pygame.draw.rect(self.screen, color, (c * (CELL_SIZE + MARGIN), r * (CELL_SIZE + MARGIN), CELL_SIZE, CELL_SIZE))
                 
                 if value != 0:
-                    text_surface = self.font.render(str(value), True, TEXT_COLOR)
+                    text_surface = self.font.render(str(value), True, TEXT_COLOR_LIGHT if value <= 2 else TEXT_COLOR_DARK)
                     text_rect = text_surface.get_rect(center=(c * (CELL_SIZE + MARGIN) + CELL_SIZE // 2,
                                                               r * (CELL_SIZE + MARGIN) + CELL_SIZE // 2))
                     self.screen.blit(text_surface, text_rect)
@@ -78,7 +87,7 @@ class ThreeGame:
         font = pygame.font.Font(None, 25)  # Ajusta el tamaño según sea necesario
 
         # Renderizar las líneas de texto
-        puntosTotales = self.state.contarPuntosTotales()
+        puntosTotales = self.state.total_points()
         line1 = font.render("Juego Terminado", True, TEXT_COLOR)
         line2 = font.render(f"Has logrado un total de {puntosTotales} puntos", True, TEXT_COLOR)
 
@@ -101,7 +110,6 @@ class ThreeGame:
                 if event.type == pygame.QUIT:
                     waiting = False
 
-    
     def mostrarErrorVentana(self):
         # Borrar el contenido de la pantalla
         self.screen.fill(BACKGROUND_COLOR)  # Limpia el fondo de la pantalla
@@ -110,7 +118,7 @@ class ThreeGame:
         font = pygame.font.Font(None, 34)  # Ajusta el tamaño según sea necesario
 
         # Renderizar las líneas de texto
-        puntosTotales = round(self.state.contarPuntosTotales(),2)
+        puntosTotales = round(self.state.total_points(),2)
         line1 = font.render("Juego Terminado", True, (255, 0, 0))  # Rojo
         line2 = font.render(f"Has logrado un total de {puntosTotales} puntos", True, (255, 0, 0))  # Rojo
 
@@ -146,7 +154,6 @@ class ThreeGame:
             pygame.display.flip()  # Actualiza la pantalla para mostrar el mensaje
             pygame.time.delay(100)
 
-
     def run(self):
         print(f"Running the game with parameters: {self.seed}, {self.game_mode}, {self.algorithm}")
         
@@ -169,7 +176,7 @@ class ThreeGame:
                             move_func = MOVES[event.key]
                             move_func()
                             
-                            if self.state.completedState():
+                            if self.state.completed_state():
                                 self.mostrarErrorVentana()
                                 running = False
 
@@ -187,7 +194,7 @@ class ThreeGame:
                 move_func = MOVES[next_move]
                 move_func()
 
-                if self.state.completedState():
+                if self.state.completed_state():
                     self.mostrarErrorVentana()
                     running = False
 
