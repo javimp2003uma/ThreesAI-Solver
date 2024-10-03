@@ -5,13 +5,11 @@ from state import State
 class DepthFirstSearch(SearchAlgorithm):
 
     def __init__(self, initial:Node) -> None:
-        self.opened_nodes = list([initial])
-        self.closed_nodes = list()
-
-        self.inital = initial
+        self.result, self.path, self.moves_list = self.run_algorithm(initial_state.clone_state())
+        self.it = 0
 
     @staticmethod
-    def find_path(node:Node[State]):
+    def find_path(node:Node):
         """
         Find path function based on node's father pointer
         """
@@ -24,7 +22,7 @@ class DepthFirstSearch(SearchAlgorithm):
         return path
 
     @staticmethod
-    def expand_node(node:Node[State]):
+    def expand_node(node:Node):
         """
         TODO
         Expand children from a node
@@ -56,7 +54,11 @@ class DepthFirstSearch(SearchAlgorithm):
         return children
 
 
-    def get_next_move(self):
+    def run_algorithm(self, initial:Node):
+        self.opened_nodes = list([initial])
+        self.closed_nodes = list()
+
+        self.inital = initial
         node:Node[State]
 
         while len(self.opened_nodes) != 0:
@@ -72,5 +74,10 @@ class DepthFirstSearch(SearchAlgorithm):
                 n:Node[State]=n
                 if n not in self.closed_nodes and n not in self.opened_nodes:
                     self.opened_nodes.append(n)
+                else:
+                    pass
                 
         return None
+
+    def get_next_move(self):
+        
