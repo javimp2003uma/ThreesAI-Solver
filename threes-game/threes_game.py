@@ -2,7 +2,7 @@ from enum import Enum
 import pygame
 
 from state import State
-from algorithms import BreadthFirstSearch, AStar # he quitao el depth por que no compilaba
+from algorithms import BreadthFirstSearch, DepthFirstSearch, AStar
 
 import tkinter as tk
 import time
@@ -23,6 +23,7 @@ class ALGORITHMS(Enum):
     A_STAR = 2
 
 ALGORITHM_CLASSES = {
+    ALGORITHMS.DEPTH_FIRST_SEARCH: DepthFirstSearch,
     ALGORITHMS.BREADTH_FIRST_SEARCH: BreadthFirstSearch,
     ALGORITHMS.A_STAR: AStar
 }
@@ -175,7 +176,7 @@ class ThreeGame:
                 self.draw_grid()
         elif self.game_mode == GAME_MODES.IA:
             algorithm_class = ALGORITHM_CLASSES[self.algorithm](self.state)
-            print(f"Secuencia de movimientos hasta el camino óptimo: {[TRANSLATE_MOVES[move] for move in algorithm_class.moves_list]}")
+            print(f"Secuencia de movimientos para {ALGORITHM_CLASSES[self.algorithm]} hasta el camino óptimo:\n {[TRANSLATE_MOVES[move] for move in algorithm_class.moves_list]}")
 
             while running:
                 time.sleep(0.25) # Frecuencia de la IA

@@ -80,7 +80,7 @@ class BreadthFirstSearch(SearchAlgorithm):
             for n2 in M: # 7. Para cada n2 en M
                 if n2 not in ABIERTOS and n2 not in CERRADOS: # a. Si n2 es nuevo
                     n2.father = n # i. Puntero de n2 a n
-                    ABIERTOS.append(n2) # ii. Lo añadimos a abuiertos
+                    ABIERTOS.append(n2) # ii. Lo añadimos a abiertos
                 else: # b. Si no es nuevo lo ignoramos
                     pass
 
@@ -92,5 +92,43 @@ class BreadthFirstSearch(SearchAlgorithm):
         if self.result != "FRACASO" and self.it < len(self.moves_list):
             next_move = self.moves_list[self.it]
             self.it = self.it + 1
+            return next_move
+        return None
+    
+
+class DepthFirstSearch(SearchAlgorithm):
+
+    def __init__(self, initial_state: State):
+        self.result, self.path, self.moves_list = self.run_algorithm(initial_state.clone_state())
+        self.it = 0
+
+    def run_algorithm(self, s):
+        A = Node(s)  # Crear nodo raíz
+        ABIERTOS = [Node(s)]  # Pila de abiertos (DFS usa pila)
+        CERRADOS = []  # Lista de cerrados
+
+        while True:
+            if not ABIERTOS:  # Si abiertos está vacía, devolver fracaso
+                return "FRACASO", [], []
+
+            n = ABIERTOS.pop()  # Extraer el último nodo de ABIERTOS (función de pila)
+            CERRADOS.append(n)  # Añadir a cerrados
+
+            if n.value.completedState():  # Verificar si es el estado objetivo
+                return "ÉXITO", n.antecesores() + [n.value], n.moves_list()
+
+            M = n.sucesores_sin_antecesores()  # Expandir el nodo
+
+            for n2 in M:  # Para cada sucesor
+                if n2 not in ABIERTOS and n2 not in CERRADOS:  # Si el nodo no está en ABIERTOS ni CERRADOS
+                    n2.father = n  # Crear puntero hacia el padre
+                    ABIERTOS.append(n2)  # Añadirlo a la pila de ABIERTOS
+                else:
+                    pass  # Ignorar si ya ha sido explorado
+
+    def get_next_move(self):
+        if self.result != "FRACASO" and self.it < len(self.moves_list):
+            next_move = self.moves_list[self.it]
+            self.it += 1
             return next_move
         return None
