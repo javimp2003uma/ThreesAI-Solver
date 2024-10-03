@@ -56,8 +56,8 @@ class DepthFirstSearch(SearchAlgorithm):
 
     def run_algorithm(self, s):
         A = Node(s)  # Crear nodo raíz
-        ABIERTOS = [Node(s)]  # Pila de abiertos (DFS usa pila)
-        CERRADOS = []  # Lista de cerrados
+        ABIERTOS = [Node(s)]    # Pila de abiertos (DFS usa pila en lugar de cola ya que queremos los mas recientes)
+        CERRADOS = []           # Lista de cerrados
 
         while True:
             if not ABIERTOS:  # Si abiertos está vacía, devolver fracaso
