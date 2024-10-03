@@ -153,7 +153,7 @@ class ThreeGame:
                 time.sleep(0.25) # Frecuencia de la IA
 
                 next_move = algorithm_class.get_next_move()
-                print(f"{algorithm_class.it}. IA Mueve: {TRANSLATE_MOVES[next_move]}")
+                print(f"({algorithm_class.it}/{len(algorithm_class.moves_list)}) IA Mueve: {TRANSLATE_MOVES[next_move]}")
 
                 move_func = MOVES[next_move]
                 move_func()
