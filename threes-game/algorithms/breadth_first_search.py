@@ -1,8 +1,7 @@
 from .search_algorithm import SearchAlgorithm
 from state import State
-import pygame
 
-from structures.node import Node
+from structures.node import Node, TRANSLATE_MOVES
 
 
 class BreadthFirstSearch(SearchAlgorithm):
@@ -21,9 +20,9 @@ class BreadthFirstSearch(SearchAlgorithm):
             if ABIERTOS == []: # 3. Si abiertos esta vacia devolver fracaso
                 return "FRACASO", [], []
 
-            n = ABIERTOS.pop() # 4. Seleccionar primero de abiertos y borrarlo de abiertos
+            n = ABIERTOS.pop(0) # 4. Seleccionar primero de abiertos y borrarlo de abiertos
             CERRADOS.append(n) # 4. añadirlo a cerrados
-
+            print(f"ABIERTOS: {len(ABIERTOS)} | CERRADOS: {len(CERRADOS)} | PROFUNDIDAD: {len(n.antecesores())}")
             if n.value.completed_state(): # 5. Si n es objetivo devolvemos el camino de s hasta n en A
                 return "ÉXITO", n.antecesores() + [n.value], n.moves_list()
             

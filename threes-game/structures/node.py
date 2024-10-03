@@ -2,6 +2,12 @@ from enum import Enum
 import pygame
 from state import State
 
+TRANSLATE_MOVES = {
+    pygame.K_LEFT: "LEFT",
+    pygame.K_RIGHT: "RIGHT",
+    pygame.K_UP: "UP",
+    pygame.K_DOWN: "DOWN"
+}
 
 class MOVEMENTS(Enum):
     UP = 0
@@ -48,8 +54,8 @@ class Node:
         move_left_node = Node(move_left_state, pygame.K_LEFT)
 
         possible_moves = [move_up_node, move_right_node, move_down_node, move_left_node]
-        valid_moves = [move for move in possible_moves if move != self.value]
-        
+        valid_moves = [move for move in possible_moves if move != self]
+
         unique_moves = []
         for move in valid_moves:
             if move not in unique_moves:
@@ -59,7 +65,7 @@ class Node:
 
     def sucesores_sin_antecesores(self):
         sucesores = self.sucesores()
-        antecesores = list(self.antecesores())
+        antecesores = self.antecesores()
 
         return [move for move in sucesores if move not in antecesores]
 

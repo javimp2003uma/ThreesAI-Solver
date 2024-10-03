@@ -3,6 +3,7 @@ import pygame
 
 from state import State
 from algorithms import BreadthFirstSearch, DepthFirstSearch, AStar
+from structures.node import TRANSLATE_MOVES
 
 import tkinter as tk
 import time
@@ -30,13 +31,6 @@ ALGORITHM_CLASSES = {
     ALGORITHMS.DEPTH_FIRST_SEARCH: DepthFirstSearch,
     ALGORITHMS.BREADTH_FIRST_SEARCH: BreadthFirstSearch,
     ALGORITHMS.A_STAR: AStar
-}
-
-TRANSLATE_MOVES = {
-    pygame.K_LEFT: "LEFT",
-    pygame.K_RIGHT: "RIGHT",
-    pygame.K_UP: "UP",
-    pygame.K_DOWN: "DOWN"
 }
 
 class ThreeGame:
