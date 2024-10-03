@@ -60,7 +60,7 @@ class Node:
         for move in valid_moves:
             if move not in unique_moves:
                 unique_moves.append(move)
-
+        print(f"{len(self.antecesores())}. UNIQUE_MOVES: {[TRANSLATE_MOVES[move.move_to_node] for move in unique_moves]}")
         return unique_moves
 
     def sucesores_sin_antecesores(self):
