@@ -179,9 +179,11 @@ class ThreeGame:
             print(f"Secuencia de movimientos para {ALGORITHM_CLASSES[self.algorithm]} hasta el camino óptimo:\n {[TRANSLATE_MOVES[move] for move in algorithm_class.moves_list]}")
 
             while running:
-                time.sleep(0.25) # Frecuencia de la IA
+                time.sleep(1) # Frecuencia de la IA
 
                 next_move = algorithm_class.get_next_move()
+                print(f"{algorithm_class.it}. IA Mueve: {TRANSLATE_MOVES[next_move]}")
+
                 move_func = MOVES[next_move]
                 move_func()
 
