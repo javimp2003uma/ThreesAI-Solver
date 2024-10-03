@@ -6,7 +6,7 @@ from structures.node import Node, TRANSLATE_MOVES
 
 class BreadthFirstSearch(SearchAlgorithm):
 
-    def __init__(self, initial_state : State):
+    def __init__(self, initial_state : State, heuristic):
         self.result, self.path, self.moves_list = self.run_algorithm(initial_state.clone_state())
         self.it = 0
 

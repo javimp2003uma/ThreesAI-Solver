@@ -4,6 +4,7 @@ import pygame
 from state import State
 from algorithms import BreadthFirstSearch, DepthFirstSearch, AStar
 from structures.node import TRANSLATE_MOVES
+from algorithms.strategy.more_free_cells_high_value import MoreFreeCellsHighValue
 
 import tkinter as tk
 import time
@@ -99,7 +100,7 @@ class ThreeGame:
 
         while waiting:
             for event in pygame.event.get():
-                if event.type == pygame.QUIT:
+                if event.type == pygame.KEYDOWN:
                     waiting = False
 
             # Actualizar el temporizador y alternar la visibilidad del texto
@@ -117,6 +118,9 @@ class ThreeGame:
 
             pygame.display.flip()  # Actualiza la pantalla para mostrar el mensaje
             pygame.time.delay(100)
+
+        pygame.quit()  # Cierra la ventana de Pygame    
+        QuestionUI.run() #Vuelve a la ventana de preguntas
 
     def run(self):
         print(f"Running the game with parameters: {self.seed}, {self.game_mode}, {self.algorithm}")
@@ -146,7 +150,8 @@ class ThreeGame:
 
                 self.draw_grid()
         elif self.game_mode == GAME_MODES.IA:
-            algorithm_class = ALGORITHM_CLASSES[self.algorithm](self.state)
+            algorithm_class = ALGORITHM_CLASSES[self.algorithm](self.state, MoreFreeCellsHighValue())
+
             # print(f"Secuencia de movimientos hasta el camino óptimo:\n {[TRANSLATE_MOVES[move] for move in algorithm_class.moves_list]}")
             # hablar con el profe lo de arriba porque vaya mierdon lo del random
 
