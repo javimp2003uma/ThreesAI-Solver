@@ -24,7 +24,7 @@ class BreadthFirstSearch(SearchAlgorithm):
             n = ABIERTOS.pop() # 4. Seleccionar primero de abiertos y borrarlo de abiertos
             CERRADOS.append(n) # 4. añadirlo a cerrados
 
-            if n.value.completedState(): # 5. Si n es objetivo devolvemos el camino de s hasta n en A
+            if n.value.completed_state(): # 5. Si n es objetivo devolvemos el camino de s hasta n en A
                 return "ÉXITO", n.antecesores() + [n.value], n.moves_list()
             
             M = n.sucesores_sin_antecesores() # 6. Expandimos n
@@ -66,7 +66,7 @@ class DepthFirstSearch(SearchAlgorithm):
             n = ABIERTOS.pop()  # Extraer el último nodo de ABIERTOS (función de pila)
             CERRADOS.append(n)  # Añadir a cerrados
 
-            if n.value.completedState():  # Verificar si es el estado objetivo
+            if n.value.completed_state():  # Verificar si es el estado objetivo
                 return "ÉXITO", n.antecesores() + [n.value], n.moves_list()
 
             M = n.sucesores_sin_antecesores()  # Expandir el nodo

@@ -40,97 +40,88 @@ class State:
         state.has_merged = self.has_merged
         return state
 
-    # Función para mover la cuadrícula hacia la izquierda
     def move_left(self):
-        self.has_merged.fill(0)
-        for r in range(self.size):
-            for c in range(1, self.size):  # Comenzar desde la segunda columna
-                if self.grid[r][c] != 0:
-                    self.shift_tile(r, c, 0, -1)  # Mover a la izquierda (-1 en la columna)
-        self.add_random_tile()
+            self.has_merged = [[0] * self.size for _ in range(self.size)]
+            for r in range(self.size):
+                for c in range(1, self.size):
+                    if self.grid[r][c] != 0:
+                        self.shift_tile(r, c, 0, -1)
+            self.add_random_tile()
 
-
-    # Función para mover la cuadrícula hacia la derecha
     def move_right(self):
-        self.has_merged.fill(0)
+        self.has_merged = [[0] * self.size for _ in range(self.size)]
         for r in range(self.size):
-            for c in range(self.size - 2, -1, -1):  # Comenzar desde la penúltima columna
+            for c in range(self.size - 2, -1, -1):
                 if self.grid[r][c] != 0:
-                    self.shift_tile(r, c, 0, 1)  # Mover a la derecha (+1 en la columna)
+                    self.shift_tile(r, c, 0, 1)
         self.add_random_tile()
 
-
-    # Función para mover la cuadrícula hacia arriba
     def move_up(self):
-        self.has_merged.fill(0)
-        for r in range(1, self.size):  # Comenzar desde la segunda fila
+        self.has_merged = [[0] * self.size for _ in range(self.size)]
+        for r in range(1, self.size):
             for c in range(self.size):
                 if self.grid[r][c] != 0:
-                    self.shift_tile(r, c, -1, 0)  # Mover hacia arriba (-1 en la fila)
+                    self.shift_tile(r, c, -1, 0)
         self.add_random_tile()
 
-
-    # Función para mover la cuadrícula hacia abajo
     def move_down(self):
-        self.has_merged.fill(0)
-        for r in range(self.size - 2, -1, -1):  # Comenzar desde la penúltima fila
+        self.has_merged = [[0] * self.size for _ in range(self.size)]
+        for r in range(self.size - 2, -1, -1):
             for c in range(self.size):
                 if self.grid[r][c] != 0:
-                    self.shift_tile(r, c, 1, 0)  # Mover hacia abajo (+1 en la fila)
+                    self.shift_tile(r, c, 1, 0)
         self.add_random_tile()
 
-
-    # Función para mover una ficha en la dirección dada (delta_row, delta_col)
     def shift_tile(self, r, c, delta_row, delta_col):
-        new_r, new_c = r + delta_row, c + delta_col
-        if 0 <= new_r < self.size and 0 <= new_c < self.size:
-            # Si la celda de destino está vacía, mueve la ficha
+        current_r, current_c = r, c
+        while True:
+            new_r, new_c = current_r + delta_row, current_c + delta_col
+            if not (0 <= new_r < self.size and 0 <= new_c < self.size):
+                break
             if self.grid[new_r][new_c] == 0:
-                self.grid[new_r][new_c] = self.grid[r][c]
-                self.grid[r][c] = 0
-            # Si la celda de destino tiene una ficha, intenta fusionar
-            elif self.can_merge(self.grid[r][c], self.grid[new_r][new_c]) and not self.has_merged[new_r][new_c]:
-                self.grid[new_r][new_c] = self.grid[r][c] + self.grid[new_r][new_c]
-                self.grid[r][c] = 0
-                self.has_merged[new_r][new_c] = 1  # Marcar como fusionado
+                self.grid[new_r][new_c] = self.grid[current_r][current_c]
+                self.grid[current_r][current_c] = 0
+                current_r, current_c = new_r, new_c
+            elif self.can_merge(self.grid[current_r][current_c], self.grid[new_r][new_c]) and not self.has_merged[new_r][new_c]:
+                self.grid[new_r][new_c] += self.grid[current_r][current_c]
+                self.grid[current_r][current_c] = 0
+                self.has_merged[new_r][new_c] = 1
+                break
+            else:
+                break
 
-    def completedState(self):
-        # Check if there's any empty space
-        for r in range(self.size):
-            for c in range(self.size):
-                if self.grid[r][c] == 0:
-                    return False  # There's an empty cell, so the game is not over
-
-        # Check if there's any possible merge
-        for r in range(self.size):
-            for c in range(self.size):
-                # Check right and down only to avoid redundant checks
-                if c + 1 < self.size and self.can_merge(self.grid[r][c], self.grid[r][c + 1]):
-                    return False  # A merge is possible to the right
-                if r + 1 < self.size and self.can_merge(self.grid[r][c], self.grid[r + 1][c]):
-                    return False  # A merge is possible downward
-
-        # No empty spaces and no possible merges
-        return True
-
-    # Reglas de fusión (1 + 2, 2 + 1, o n + n si n >= 3)
     def can_merge(self, a, b):
         if (a == 1 and b == 2) or (a == 2 and b == 1):
             return True
         if a >= 3 and a == b:
             return True
         return False
-    
-    # Agrega una ficha en cualquier celda vacía después de un movimiento válido
+
     def add_random_tile(self):
         empty_cells = [(r, c) for r in range(self.size) for c in range(self.size) if self.grid[r][c] == 0]
         if empty_cells:
             row, col = rnd.choice(empty_cells)
-            self.grid[row][col] = rnd.choice([1, 2, 3])  # Insertar ficha aleatoria
-        
-    def contarPuntosTotales(self):
+            self.grid[row][col] = rnd.choice([1, 2, 3])
+
+    def completed_state(self):
+        for r in range(self.size):
+            for c in range(self.size):
+                if self.grid[r][c] == 0:
+                    return False
+
+        for r in range(self.size):
+            for c in range(self.size):
+                if c + 1 < self.size and self.can_merge(self.grid[r][c], self.grid[r][c + 1]):
+                    return False
+                if r + 1 < self.size and self.can_merge(self.grid[r][c], self.grid[r + 1][c]):
+                    return False
+
+        return True
+
+    def total_points(self):
         total = 0
         for r in range(self.size):
             for c in range(self.size):
-                total += 3 ** (1 + math.log2(self.grid[r][c] / 3))
+                if self.grid[r][c] >= 3:
+                    total += 3 ** (1 + math.log2(self.grid[r][c] / 3))
         return total
