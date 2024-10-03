@@ -28,8 +28,7 @@ class AStar(SearchAlgorithm):
             CERRADOS.append(n)  # PASO 4 Borrar n de ABIERTOS y añadirlo a CERRADOS.
             print(f"ABIERTOS: {len(ABIERTOS)} | CERRADOS: {len(CERRADOS)} | PROFUNDIDAD: {len(n.antecesores())}")
             if n.value.completed_state():  #PASO 5. Si n es objetivo, 
-                return "ÉXITO", n.antecesores() + [
-                    n.value], n.moves_list()  #PASO 5 entonces devolver el camino de s hasta n en A.
+                return "ÉXITO", n.antecesores() + [n], n.moves_list() #PASO 5 entonces devolver el camino de s hasta n en A.
 
             M = n.sucesores_sin_antecesores()  # PASO 6 Expandir n. M <- sucesores(n, G) – antecesores(n, A). 
 
@@ -62,10 +61,19 @@ class AStar(SearchAlgorithm):
 
         return "FRACASO", [], []  # #PASO 3 Si ABIERTOS está vacía, entonces devolver ‘FRACASO’. 
 
+    def heuristic(self, state: State):
+        """
+        Función heurística. Puede ser mejorada según el problema.
+        Aquí evaluamos el número de celdas vacías y la ficha más alta como heurística.
+        """
+        empty_cells = sum([1 for row in state.grid for cell in row if cell == 0])
+        max_tile = max([max(row) for row in state.grid])
+        return -max_tile + empty_cells  # Queremos fichas grandes y más espacios vacíos
+        # return 0
     def get_next_state(self):
-        if self.result != "FRACASO" and self.it < len(self.path):
-            next_state = self.path[self.it].value
-            next_move = self.moves_list[self.it + 1]  # El primer state es el estado inicial
+        if self.result != "FRACASO" and self.it < len(self.moves_list):
+            next_state = self.path[self.it + 1].value # El primer state es el estado inicial
+            next_move = self.moves_list[self.it]
             self.it = self.it + 1
             return next_state, next_move
         return None, None

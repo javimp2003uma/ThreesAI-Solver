@@ -101,7 +101,7 @@ class State:
         empty_cells = [(r, c) for r in range(self.size) for c in range(self.size) if self.grid[r][c] == 0]
         if empty_cells:
             row, col = rnd.choice(empty_cells)
-            self.grid[row][col] = rnd.choice([1, 2, 3])
+            self.grid[row][col] = rnd.randint(1, self.size-1)
 
     def completed_state(self):
         for r in range(self.size):

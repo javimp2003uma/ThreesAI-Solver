@@ -151,8 +151,7 @@ class ThreeGame:
                 self.draw_grid()
         elif self.game_mode == GAME_MODES.IA:
             algorithm_class = ALGORITHM_CLASSES[self.algorithm](self.state, MoreFreeCellsHighValue())
-
-            # print(f"Secuencia de movimientos hasta el camino óptimo:\n {[TRANSLATE_MOVES[move] for move in algorithm_class.moves_list]}")
+            print(f"Secuencia de movimientos hasta el camino óptimo:\n {[TRANSLATE_MOVES[move] for move in algorithm_class.moves_list]}")
             # hablar con el profe lo de arriba porque vaya mierdon lo del random
 
             while running:
