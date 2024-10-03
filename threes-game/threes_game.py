@@ -66,8 +66,8 @@ class ThreeGame:
                 color = (
                             CELL_COLOR_ONES if value == 1 else
                             CELL_COLOR_TWOS if value == 2 else
-                            CELL_COLOR_NUMBER if value > 2 else
-                            CELL_COLOR_DEFAULT
+                            tuple(max(0, int(c * max(0.1, 1 - value / 100))) for c in CELL_COLOR_NUMBER)
+                            if value > 2 else CELL_COLOR_DEFAULT
                         )
                 pygame.draw.rect(self.screen, color, (c * (CELL_SIZE + MARGIN), r * (CELL_SIZE + MARGIN), CELL_SIZE, CELL_SIZE))
                 
