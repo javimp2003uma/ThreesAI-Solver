@@ -20,11 +20,16 @@ class Node:
         self.value = value
         self.move_to_node = move_to_node
         self.father = father
+        self.f_cost = 0
 
     def __eq__(self, other):
         if not isinstance(other, Node):
             return False
         return self.value == other.value
+    
+    def __lt__(self, other):
+        # Aquí puedes definir cómo comparar dos nodos
+        return self.f_cost < other.f_cost  # Asegúrate de que f_cost esté definido
 
     def __hash__(self):
         return hash(self.value)
