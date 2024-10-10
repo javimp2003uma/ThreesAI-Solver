@@ -19,6 +19,7 @@ TEXT_COLOR_DARK = (76, 76, 76)
 TEXT_COLOR_LIGHT = (255, 255, 255)
 CELL_SIZE = 100
 MARGIN = 10
+NEXT_NUM_SPACE = 150
 
 class GAME_MODES(Enum):
     USER = 0
@@ -50,7 +51,7 @@ class ThreeGame:
 
         self.heuristic = heu
 
-        self.screen = pygame.display.set_mode((self.size * (CELL_SIZE + MARGIN), self.size * (CELL_SIZE + MARGIN)))
+        self.screen = pygame.display.set_mode((self.size * (CELL_SIZE + MARGIN) + NEXT_NUM_SPACE, self.size * (CELL_SIZE + MARGIN)))
         self.font = pygame.font.Font(None, 55)
         pygame.display.set_caption("Threes Game") 
 
@@ -74,11 +75,36 @@ class ThreeGame:
                     text_rect = text_surface.get_rect(center=(c * (CELL_SIZE + MARGIN) + CELL_SIZE // 2,
                                                               r * (CELL_SIZE + MARGIN) + CELL_SIZE // 2))
                     self.screen.blit(text_surface, text_rect)
+        
+        label_font = pygame.font.Font(None, 25)
+        next_num_font = pygame.font.Font(None, 35)
+
+        label_surf = label_font.render("Próximo número", True, CELL_COLOR_ONES)
+        label_rect = label_surf.get_rect(center=(self.size * (CELL_SIZE + MARGIN) + (NEXT_NUM_SPACE - MARGIN) // 2, self.size * (CELL_SIZE + MARGIN) // 2 - 10))
+
+        next_num_surf = next_num_font.render(f"{self.state.next_number}", True, CELL_COLOR_ONES)
+        next_num_rect = next_num_surf.get_rect(center=(self.size * (CELL_SIZE + MARGIN) + (NEXT_NUM_SPACE - MARGIN) // 2, self.size * (CELL_SIZE + MARGIN) // 2 + 10))
+
+        pygame.draw.rect(
+            self.screen, 
+            CELL_COLOR_DEFAULT, 
+            (self.size * (CELL_SIZE + MARGIN) - 2, 
+             self.size * (CELL_SIZE + MARGIN) // 2 - 25,
+            NEXT_NUM_SPACE - MARGIN + 5,
+             50)
+        )
+
+
+        self.screen.blits([
+            (label_surf, label_rect),
+            (next_num_surf, next_num_rect)
+        ])
+        
 
         pygame.display.flip()
     
     
-    def mostrarErrorVentana(self):
+    def show_points_window(self):
         # Borrar el contenido de la pantalla
         self.screen.fill(BACKGROUND_COLOR)  # Limpia el fondo de la pantalla
 
@@ -91,10 +117,10 @@ class ThreeGame:
         line2 = font.render(f"Has logrado un total de {puntosTotales} puntos", True, TEXT_COLOR_DARK)
 
         # Obtener el rectángulo para centrar el texto
-        rect1 = line1.get_rect(center=(self.size * (CELL_SIZE + MARGIN) // 2, 
-                                        self.size * (CELL_SIZE + MARGIN) // 2 - 20))  # Ajusta la posición vertical
-        rect2 = line2.get_rect(center=(self.size * (CELL_SIZE + MARGIN) // 2, 
-                                        self.size * (CELL_SIZE + MARGIN) // 2 + 20))  # Ajusta la posición vertical
+        rect1 = line1.get_rect(center=((self.size * (CELL_SIZE + MARGIN) + NEXT_NUM_SPACE) // 2, 
+                                        (self.size * (CELL_SIZE + MARGIN)) // 2 - 20))  # Ajusta la posición vertical
+        rect2 = line2.get_rect(center=((self.size * (CELL_SIZE + MARGIN) + NEXT_NUM_SPACE) // 2, 
+                                        (self.size * (CELL_SIZE + MARGIN)) // 2 + 20))  # Ajusta la posición vertical
 
         # Bucle para esperar hasta que se cierre la ventana
         waiting = True
@@ -148,7 +174,7 @@ class ThreeGame:
                             move_func()
                             
                             if self.state.completed_state():
-                                self.mostrarErrorVentana()
+                                self.show_points_window()
                                 running = False
 
                 self.draw_grid()
@@ -176,7 +202,7 @@ class ThreeGame:
                     print(f"({algorithm_class.it}/{len(algorithm_class.moves_list)}) IA Mueve: {TRANSLATE_MOVES[next_move]}")
                     self.draw_grid()
                 else: # Juego terminado
-                    self.mostrarErrorVentana()
+                    self.show_points_window()
                     running = False
 
 if __name__ == "__main__":
@@ -274,6 +300,7 @@ class QuestionUI:
 
         def startGame():
             global heuristic
+            heuristic = None
             seed = inputSeed.get()
             game_mode_aux = variable.get()
 

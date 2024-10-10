@@ -9,6 +9,8 @@ class State:
 
         self.size = size
 
+        self.gen_next_number()
+
         posx1 = rnd.randint(0, size-1)
         posy1 = rnd.randint(0, size-1)
         posx2 = rnd.randint(0, size-1)
@@ -33,6 +35,9 @@ class State:
 
     def __hash__(self):
         return hash(self.grid.tobytes())  # Devuelve el hash del valor
+
+    def gen_next_number(self):
+        self.next_number = rnd.randint(1, self.size-1) 
 
     def clone_state(self):
         state = State(self.seed, self.size)
@@ -101,7 +106,8 @@ class State:
         empty_cells = [(r, c) for r in range(self.size) for c in range(self.size) if self.grid[r][c] == 0]
         if empty_cells:
             row, col = rnd.choice(empty_cells)
-            self.grid[row][col] = rnd.randint(1, self.size-1)
+            self.grid[row][col] = self.next_number
+            self.gen_next_number()
 
     def completed_state(self):
         for r in range(self.size):
