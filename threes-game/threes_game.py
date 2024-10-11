@@ -6,6 +6,8 @@ from algorithms import BreadthFirstSearch, DepthFirstSearch, AStar
 from structures.node import TRANSLATE_MOVES
 from algorithms.strategy.more_free_cells_high_value import MoreFreeCellsHighValue
 from algorithms.strategy.number_equals import NumberEquals
+from algorithms.strategy.max_tile_and_free_cells import MaxTileAndFreeCells
+from algorithms.strategy.max_value_and_adjacent import MaxValueAndAdjacent
 
 import tkinter as tk
 import time
@@ -155,10 +157,10 @@ class ThreeGame:
         print(f"Running the game with parameters: {self.seed}, {self.game_mode}, {self.algorithm}")
         
         MOVES = {
-            pygame.K_LEFT: self.state.move_left,
-            pygame.K_RIGHT: self.state.move_right,
-            pygame.K_UP: self.state.move_up,
-            pygame.K_DOWN: self.state.move_down
+            pygame.K_LEFT: "LEFT",
+            pygame.K_RIGHT: "RIGHT",
+            pygame.K_UP: "UP",
+            pygame.K_DOWN: "DOWN"
         }
 
         running = True
@@ -170,8 +172,8 @@ class ThreeGame:
 
                     if event.type == pygame.KEYDOWN:
                         if event.key in MOVES.keys():
-                            move_func = MOVES[event.key]
-                            move_func()
+                            move_dir = MOVES[event.key]
+                            self.state.move(move_dir)
                             
                             if self.state.completed_state():
                                 self.show_points_window()
@@ -184,8 +186,16 @@ class ThreeGame:
             # hablar con el profe lo de arriba porque vaya mierdon lo del random
 
             while running:
-                time.sleep(0.25) # Frecuencia de la IA
+                
+                for moves in algorithm_class.moves_list:
+                    time.sleep(0.25) # Frecuencia de la IA
+                    move = TRANSLATE_MOVES[moves]
+                    self.state.move(move)      
+                    if self.state.completed_state():
+                        self.show_points_window()
+                        running = False
 
+                    self.draw_grid()
                 #next_move = algorithm_class.get_next_move()
                 #print(f"({algorithm_class.it}/{len(algorithm_class.moves_list)}) IA Mueve: {TRANSLATE_MOVES[next_move]}")
 
@@ -196,14 +206,14 @@ class ThreeGame:
                 #    self.mostrarErrorVentana()
                 #    running = False
 
-                next_state, next_move = algorithm_class.get_next_state()
-                if next_state is not None:
-                    self.state = next_state
-                    print(f"({algorithm_class.it}/{len(algorithm_class.moves_list)}) IA Mueve: {TRANSLATE_MOVES[next_move]}")
-                    self.draw_grid()
-                else: # Juego terminado
-                    self.show_points_window()
-                    running = False
+                # next_state, next_move = algorithm_class.get_next_state()
+                # if next_state is not None:
+                #     self.state = next_state
+                #     print(f"({algorithm_class.it}/{len(algorithm_class.moves_list)}) IA Mueve: {TRANSLATE_MOVES[next_move]}")
+                #     self.draw_grid()
+                # else: # Juego terminado
+                #     self.show_points_window()
+                #     running = False
 
 if __name__ == "__main__":
     
@@ -282,7 +292,7 @@ class QuestionUI:
                     pregunta_heuristic.place(x=200, y=400)
 
                 if input_heuristic is None:
-                    input_heuristic = tk.OptionMenu(ventana, variable_heuristic, "More Free Cells", "Number No Matches")
+                    input_heuristic = tk.OptionMenu(ventana, variable_heuristic, "More Free Cells", "Number No Matches", "MaxValueAndAdjacent", "test")
                     input_heuristic.place(x=200, y=450)
             else:
                 # Si se elige "USER", eliminamos el menú de algoritmos (si está visible)
@@ -324,6 +334,10 @@ class QuestionUI:
                         heuristic = MoreFreeCellsHighValue()
                     elif heuristic_aux == "Number No Matches":
                         heuristic = NumberEquals()
+                    elif heuristic_aux == "test":
+                        heuristic = MaxTileAndFreeCells()
+                    elif heuristic_aux == "MaxValueAndAdjacent":
+                        heuristic = MaxValueAndAdjacent()
 
 
             

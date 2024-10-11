@@ -61,15 +61,7 @@ class AStar(SearchAlgorithm):
 
         return "FRACASO", [], []  # #PASO 3 Si ABIERTOS está vacía, entonces devolver ‘FRACASO’. 
 
-    def heuristic(self, state: State):
-        """
-        Función heurística. Puede ser mejorada según el problema.
-        Aquí evaluamos el número de celdas vacías y la ficha más alta como heurística.
-        """
-        empty_cells = sum([1 for row in state.grid for cell in row if cell == 0])
-        max_tile = max([max(row) for row in state.grid])
-        return -max_tile + empty_cells  # Queremos fichas grandes y más espacios vacíos
-        # return 0
+
     def get_next_state(self):
         if self.result != "FRACASO" and self.it < len(self.moves_list):
             next_state = self.path[self.it + 1].value # El primer state es el estado inicial

@@ -42,16 +42,16 @@ class Node:
     
     def sucesores(self): # Orden de expansion: movimientos ortogonales a sentido horario en los angulos de 90 (los permitidos)
         move_up_state = self.value.clone_state()
-        move_up_state.move_up()
+        move_up_state.move("UP")
 
         move_right_state = self.value.clone_state()
-        move_right_state.move_right()
+        move_right_state.move("RIGHT")
 
         move_down_state = self.value.clone_state()
-        move_down_state.move_down()
+        move_down_state.move("DOWN")
 
         move_left_state = self.value.clone_state()
-        move_left_state.move_left()
+        move_left_state.move("LEFT")
 
         move_up_node = Node(move_up_state, pygame.K_UP)
         move_right_node = Node(move_right_state, pygame.K_RIGHT)
