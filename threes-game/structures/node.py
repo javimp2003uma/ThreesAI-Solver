@@ -1,19 +1,6 @@
-from enum import Enum
 import pygame
+
 from state import State
-
-TRANSLATE_MOVES = {
-    pygame.K_LEFT: "LEFT",
-    pygame.K_RIGHT: "RIGHT",
-    pygame.K_UP: "UP",
-    pygame.K_DOWN: "DOWN"
-}
-
-class MOVEMENTS(Enum):
-    UP = 0
-    DOWN = 1
-    LEFT = 2
-    RIGHT = 3
 
 class Node:
     def __init__(self, value:State, move_to_node=None, father=None):

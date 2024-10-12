@@ -10,8 +10,7 @@ class AStar(SearchAlgorithm):
         # Ejecuta el algoritmo A* y almacena el resultado, la ruta y la lista de movimientos
         self.heuristic = heuristic
         self.result, self.path, self.moves_list = self.run_algorithm(initial_state.clone_state())
-        self.it = 0  # Iterador para devolver los movimientos uno por uno
-
+        self.it = 0 
 
     def run_algorithm(self, s):
         g_cost = {s: 0}  # Coste desde el inicio hasta cada nodo
@@ -61,11 +60,9 @@ class AStar(SearchAlgorithm):
 
         return "FRACASO", [], []  # #PASO 3 Si ABIERTOS está vacía, entonces devolver ‘FRACASO’. 
 
-
-    def get_next_state(self):
+    def get_next_move(self):
         if self.result != "FRACASO" and self.it < len(self.moves_list):
-            next_state = self.path[self.it + 1].value # El primer state es el estado inicial
             next_move = self.moves_list[self.it]
             self.it = self.it + 1
-            return next_state, next_move
-        return None, None
+            return next_move
+        return None

@@ -1,6 +1,7 @@
 from .search_algorithm import SearchAlgorithm
-from structures.node import Node, MOVEMENTS
 from state import State
+
+from structures.node import Node
 
 
 class DepthFirstSearch(SearchAlgorithm):
@@ -39,17 +40,9 @@ class DepthFirstSearch(SearchAlgorithm):
             # 8. Ordenamos abiertos por antiguedad (ya estan ordenados por antiguedad)
             # 9. Volvemos a 3 (es un bucle while, ya lo hace)
 
-    #def get_next_move(self):
-    #    if self.result != "FRACASO" and self.it < len(self.moves_list):
-    #        next_move = self.moves_list[self.it]
-    #        self.it = self.it + 1
-    #        return next_move
-    #    return None
-
-    def get_next_state(self):
+    def get_next_move(self):
         if self.result != "FRACASO" and self.it < len(self.moves_list):
-            next_state = self.path[self.it + 1].value  # El primer state es el estado inicial
             next_move = self.moves_list[self.it]
             self.it = self.it + 1
-            return next_state, next_move
-        return None, None
+            return next_move
+        return None
