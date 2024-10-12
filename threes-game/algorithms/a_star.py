@@ -26,13 +26,14 @@ class AStar(SearchAlgorithm):
             _, n = heapq.heappop(ABIERTOS)  # PASO 4 Seleccionar n <- primero(ABIERTOS).(menor f_cost)
             CERRADOS.append(n)  # PASO 4 Borrar n de ABIERTOS y añadirlo a CERRADOS.
             print(f"ABIERTOS: {len(ABIERTOS)} | CERRADOS: {len(CERRADOS)} | PROFUNDIDAD: {len(n.antecesores())}")
+
             if n.value.completed_state():  #PASO 5. Si n es objetivo, 
                 return "ÉXITO", n.antecesores() + [n], n.moves_list() #PASO 5 entonces devolver el camino de s hasta n en A.
 
             M = n.sucesores_sin_antecesores()  # PASO 6 Expandir n. M <- sucesores(n, G) – antecesores(n, A). 
 
             for n2 in M:  #PASO 7. Para cada n2 en M,
-                tentative_g_cost = g_cost[n.value] + 1  # Coste desde el nodo inicial hasta n2
+                tentative_g_cost = g_cost[n.value] + n.value.coste_arco(n2.value)  # Coste desde el nodo inicial hasta n2
 
                 # # PASO 7a. Si n2 es nuevo (n2 no está ABIERTO ni CERRADO), 
                 # if n2 not in ABIERTOS and n2 not in CERRADOS: 

@@ -2,7 +2,7 @@ import tkinter as tk
 
 from algorithms.strategy.more_free_cells_high_value import MoreFreeCellsHighValue
 from algorithms.strategy.number_equals import NumberEquals
-from algorithms.strategy.max_tile_and_free_cells import MaxTileAndFreeCells
+from algorithms.strategy.dijkstra import Dijkstra
 from algorithms.strategy.max_value_and_adjacent import MaxValueAndAdjacent
 
 from structures.utils import ALGORITHMS, GAME_MODES
@@ -73,7 +73,7 @@ class QuestionUI:
                     pregunta_heuristic.place(x=200, y=400)
 
                 if input_heuristic is None:
-                    input_heuristic = tk.OptionMenu(ventana, variable_heuristic, "More Free Cells", "Number No Matches", "MaxValueAndAdjacent", "test")
+                    input_heuristic = tk.OptionMenu(ventana, variable_heuristic, "More Free Cells", "Number No Matches", "MaxValueAndAdjacent", "Dijkstra")
                     input_heuristic.place(x=200, y=450)
             else:
                 if pregunta_heuristic is not None:
@@ -109,8 +109,8 @@ class QuestionUI:
                         heuristic = MoreFreeCellsHighValue()
                     elif heuristic_aux == "Number No Matches":
                         heuristic = NumberEquals()
-                    elif heuristic_aux == "test":
-                        heuristic = MaxTileAndFreeCells()
+                    elif heuristic_aux == "Dijkstra":
+                        heuristic = Dijkstra()
                     elif heuristic_aux == "MaxValueAndAdjacent":
                         heuristic = MaxValueAndAdjacent()
 

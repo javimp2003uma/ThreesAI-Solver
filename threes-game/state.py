@@ -66,6 +66,7 @@ class State:
             self.move_up()
         elif direction == 'DOWN':
             self.move_down()
+
         self.gen_next_number()
 
     def move_left(self):
@@ -157,6 +158,9 @@ class State:
                 if self.can_merge(self.grid[r, c], self.grid[r + 1, c]):
                     return False
         return True
+
+    def coste_arco(self, e2):
+        return e2.total_points() - self.total_points()
 
     def total_points(self):
         return sum(3 ** (1 + math.log2(val / 3)) for val in self.grid.flatten() if val >= 3)
