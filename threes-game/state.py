@@ -8,13 +8,12 @@ class State:
         self.rnd = rnd.Random(seed)
 
         self.size = size
-        self.gen_next_number()
 
-        grid_array = self.populate_initial_tiles(8)     
-
-        self.grid = grid_array
+        self.grid = self.populate_initial_tiles((size * size) // 2)     
         self.has_merged = np.zeros_like(self.grid)
     
+        self.gen_next_number()
+
     def __eq__(self, other):
         return isinstance(other, State) and np.array_equal(self.grid, other.grid)
 
@@ -22,15 +21,32 @@ class State:
         return hash(self.grid.tobytes())
     
     def gen_next_number(self):
-            self.next_number = self.rnd.randint(1, self.size - 1)
+        max_value = np.max(self.grid)
+
+        valid_numbers = [1, 2, 3]
+        current_value = 3
+        while current_value <= max_value // 2:
+            current_value *= 2
+
+        probabilities = [val for val in valid_numbers]#if val < 3 else 1 / (3 ** (1 + math.log2(val / 3))) for val in valid_numbers]
+        total_probability = sum(probabilities)
+        probabilities = [p / total_probability for p in probabilities]
+
+        cumulative_probabilities = np.cumsum(probabilities)
+        random_value = self.rnd.random()
+
+        for i, cumulative_probability in enumerate(cumulative_probabilities):
+            if random_value < cumulative_probability:
+                self.next_number = valid_numbers[i]
+                return
 
     def populate_initial_tiles(self, num_tiles=8):
         grid_array = np.zeros((self.size, self.size), dtype=int)
         positions = self.rnd.sample(range(self.size * self.size), num_tiles)
         for pos in positions:
             row, col = divmod(pos, self.size)
-            grid_array[row, col] = self.next_number
-            self.gen_next_number()
+            grid_array[row, col] = self.rnd.randint(1, 3)
+
         return grid_array
 
     def clone_state(self):

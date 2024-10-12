@@ -129,7 +129,6 @@ class ThreeGame:
             pygame.time.delay(100)
 
         pygame.quit()  # Cierra la ventana de Pygame    
-        QuestionUI.run() #Vuelve a la ventana de preguntas
 
     def run(self):
         print(f"Running the game with parameters: {self.seed}, {self.game_mode}, {self.algorithm}")
