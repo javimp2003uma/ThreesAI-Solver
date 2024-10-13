@@ -18,7 +18,7 @@ NEXT_NUM_SPACE = 150
 
 class ThreeGame:
     
-    def __init__(self, seed, game_mode, alg, heu, size=4):
+    def __init__(self, seed, game_mode, alg, heu, size=4, headless=False):
         pygame.init()
 
         self.seed = seed
@@ -35,7 +35,7 @@ class ThreeGame:
         self.font = pygame.font.Font(None, 55)
         pygame.display.set_caption("Threes Game") 
 
-        self.draw_grid()
+        if not headless:self.draw_grid()
 
     def draw_grid(self):
         self.screen.fill(BACKGROUND_COLOR)
@@ -130,7 +130,8 @@ class ThreeGame:
 
         pygame.quit()  # Cierra la ventana de Pygame    
 
-    def run(self):
+    def run(self, headless=False):
+        points = 0
         print(f"Running the game with parameters: {self.seed}, {self.game_mode}, {self.algorithm}")
         
         MOVES = {
@@ -153,26 +154,34 @@ class ThreeGame:
                             self.state.move(move_dir)
                             
                             if self.state.completed_state():
-                                self.show_points_window()
+                                points = self.show_points_window()
                                 running = False
 
-                self.draw_grid()
+                self.draw_grid() 
         elif self.game_mode == GAME_MODES.IA:
-            algorithm_class = ALGORITHM_CLASSES[self.algorithm](self.state, self.heuristic)
-            print(f"Secuencia de movimientos hasta el camino óptimo:\n {[TRANSLATE_MOVES[move] for move in algorithm_class.moves_list]}")
+            start_time = time.time()
+            algorithm_class = ALGORITHM_CLASSES[self.algorithm](self.state, self.heuristic, headless= headless)
+            if not headless: print(f"Secuencia de movimientos hasta el camino óptimo:\n {[TRANSLATE_MOVES[move] for move in algorithm_class.moves_list]}")
 
             while running:
                 next_move = algorithm_class.get_next_move()
                 if next_move is not None:
                     translated_move = TRANSLATE_MOVES[next_move]
-                    print(f"({algorithm_class.it}/{len(algorithm_class.moves_list)}) IA Mueve: {TRANSLATE_MOVES[next_move]}")
+                    if not headless: print(f"({algorithm_class.it}/{len(algorithm_class.moves_list)}) IA Mueve: {TRANSLATE_MOVES[next_move]}")
 
                     self.state.move(translated_move)
                     if self.state.completed_state():
-                        self.show_points_window()
-                        running = False
+                        if headless:
+                            end_time = time.time()
+                            points = self.state.total_points()
+                            pygame.quit()
+                            return points, end_time - start_time
+                        else:
+                            points = self.show_points_window()                        
+                            running = False
 
-                    self.draw_grid()
+                    if not headless : self.draw_grid() 
+                    else: None
                 else:
                     running = False
                     print("Ha habido algún error, no hay mas movimientos pero no se ha llegado al estado final")
