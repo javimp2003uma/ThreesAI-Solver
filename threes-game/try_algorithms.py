@@ -7,6 +7,7 @@ from algorithms.strategy.dijkstra import Dijkstra
 from algorithms.strategy.max_value_and_adjacent import MaxValueAndAdjacent
 from algorithms.strategy.max_tiles_combination_potential import MaxTilesCombinationPotential
 from algorithms.strategy.max_tile_and_free_cells import MaxTileAndFreeCells 
+from algorithms.strategy.max_achievable_minus_current import MaxAchievableMinusCurrentScore
 
 from threes_game import ThreeGame
 from structures.utils import ALGORITHMS, GAME_MODES
@@ -31,6 +32,8 @@ for seed in seeds:
     points6, time6 = three_game6.run(headless=True)
     three_game7 = ThreeGame(seed, GAME_MODES.IA, ALGORITHMS.A_STAR, heu=MaxTilesCombinationPotential(), headless=True)
     points7, time7 = three_game7.run(headless=True)
+    three_game8 = ThreeGame(seed, GAME_MODES.IA, ALGORITHMS.A_STAR, heu=MaxAchievableMinusCurrentScore(), headless=True)
+    points8, time8 = three_game8.run(headless=True)
 
     print("--------------------------------------------------------------------")
     print("Semilla: ", seed, '\n')
@@ -40,5 +43,6 @@ for seed in seeds:
     print("Dijkstra: Puntos:  ", points5, ' Tiempo: ', time5, '\n')
     print("MAxValueAndAdjacent: Puntos:  ", points6, ' Tiempo: ', time6, '\n')
     print("MaxTilesCombinationPotencial: Puntos: ", points7, ' Tiempo: ', time7, '\n')
+    print("MaxAchievableMinusCurrentScore: Puntos: ", points8, ' Tiempo: ', time8, '\n')
     print("DFS: Puntos: ", points1, ' Tiempo: ', time1, '\n')
     print("--------------------------------------------------------------------")
