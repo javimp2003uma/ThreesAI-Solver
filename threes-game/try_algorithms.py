@@ -13,7 +13,7 @@ from structures.utils import ALGORITHMS, GAME_MODES
 
 seeds = []
 
-for i in range(input("Introduce el número de semillas: ")):
+for i in range(int(input("Introduce el número de semillas: "))):
     seeds.append(rd.randint(0, 100000))
 
 for seed in seeds:
@@ -32,7 +32,7 @@ for seed in seeds:
     three_game7 = ThreeGame(seed, GAME_MODES.IA, ALGORITHMS.A_STAR, heu=MaxTilesCombinationPotential(), headless=True)
     points7, time7 = three_game7.run(headless=True)
 
-
+    print("--------------------------------------------------------------------")
     print("Semilla: ", seed, '\n')
     print("MaxTilesAndFreeCells: Puntos: ", points2, ' Tiempo: ', time2, '\n')
     print("MoreFreeCells ", points3, ' Tiempo: ', time3, '\n')
@@ -41,3 +41,4 @@ for seed in seeds:
     print("MAxValueAndAdjacent ", points6, ' Tiempo: ', time6, '\n')
     print("MaxTilesCombinationPotencial", points7, ' Tiempo: ', time7, '\n')
     print("DFS", points1, ' Tiempo: ', time1, '\n')
+    print("--------------------------------------------------------------------")
