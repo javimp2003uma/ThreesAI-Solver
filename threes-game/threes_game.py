@@ -132,7 +132,7 @@ class ThreeGame:
 
     def run(self, headless=False):
         points = 0
-        print(f"Running the game with parameters: {self.seed}, {self.game_mode}, {self.algorithm}")
+        if not headless: print(f"Running the game with parameters: {self.seed}, {self.game_mode}, {self.algorithm}")
         
         MOVES = {
             pygame.K_LEFT: "LEFT",
