@@ -158,25 +158,41 @@ class State:
 
     def move_in_direction(self, delta_row, delta_col):
         """
-        Moves the tiles in the game board in the specified direction.
-
-        Args:
-            delta_row (int): The change in the row index to determine the direction of movement.
-            delta_col (int): The change in the column index to determine the direction of movement.
-
-        This method resets the merge status of all tiles, then iterates through the board to shift
-        tiles in the specified direction. After shifting, it adds a new random tile to the board.
+        Moves the tiles in the grid in the specified direction and merges them if possible.
+        Parameters:
+        delta_row (int): The change in row direction. Use 1 for down, -1 for up, and 0 for no vertical movement.
+        delta_col (int): The change in column direction. Use 1 for right, -1 for left, and 0 for no horizontal movement.
+        This method resets the merge state of the tiles, shifts the tiles in the specified direction,
+        and merges them if they are the same and can be merged according to the game rules. After moving
+        and merging, it adds a new random tile to the grid.
         """
-        self.has_merged.fill(False)  # Reset has_merged
-        for r in range(self.size):
-            for c in range(self.size):
-                # Define the actual position to move based on direction
-                new_r = r + delta_row
-                new_c = c + delta_col
-                if (0 <= new_r < self.size) and (0 <= new_c < self.size):
-                    # Logic for shifting tiles
-                    self.shift_tile(r, c, delta_row, delta_col)
+        self.has_merged.fill(False)  # Resetear el estado de fusiones
+
+        if delta_col != 0:  # Movimiento horizontal
+            if delta_col == 1:  # Movimiento a la derecha
+                for r in range(self.size):
+                    for c in range(self.size - 1, -1, -1):
+                        if self.grid[r][c] != 0:
+                            self.shift_tile(r, c, 0, 1)  # Desplazar a la derecha
+            elif delta_col == -1:  # Movimiento a la izquierda
+                for r in range(self.size):
+                    for c in range(self.size):
+                        if self.grid[r][c] != 0:
+                            self.shift_tile(r, c, 0, -1)  # Desplazar a la izquierda
+
+        elif delta_row != 0:  # Movimiento vertical
+            if delta_row == 1:  # Movimiento hacia abajo
+                for r in range(self.size - 1, -1, -1):
+                    for c in range(self.size):
+                        if self.grid[r][c] != 0:
+                            self.shift_tile(r, c, 1, 0)  # Desplazar hacia abajo
+            elif delta_row == -1:  # Movimiento hacia arriba
+                for r in range(self.size):
+                    for c in range(self.size):
+                        if self.grid[r][c] != 0:
+                            self.shift_tile(r, c, -1, 0)  # Desplazar hacia arriba
         self.add_random_tile(delta_row, delta_col)
+
 
     def shift_tile(self, r, c, delta_row, delta_col):
         """
