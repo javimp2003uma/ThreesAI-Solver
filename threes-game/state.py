@@ -134,127 +134,49 @@ class State:
 
     def move(self, direction):
         """
-        Executes a move in the specified direction and generates the next number.
+        Moves the game state in the specified direction.
+
         Parameters:
-        direction (str): The direction to move the tiles. 
+        direction (str): The direction to move the game state. 
                          Must be one of 'LEFT', 'RIGHT', 'UP', or 'DOWN'.
+
         Raises:
         ValueError: If the direction is not one of 'LEFT', 'RIGHT', 'UP', or 'DOWN'.
         """
-        if direction == 'LEFT':
-            self.move_left()
-        elif direction == 'RIGHT':
-            self.move_right()
-        elif direction == 'UP':
-            self.move_up()
-        elif direction == 'DOWN':
-            self.move_down()
+        directions = {
+            'LEFT': (0, -1),
+            'RIGHT': (0, 1),
+            'UP': (-1, 0),
+            'DOWN': (1, 0)
+        }
+        if direction in directions:
+            delta_row, delta_col = directions[direction]
+            self.move_in_direction(delta_row, delta_col)
+            self.gen_next_number()
         else:
             raise ValueError("Invalid direction. Use 'LEFT', 'RIGHT', 'UP', or 'DOWN'.")
 
-        self.gen_next_number()
-
-    def move_left(self):
+    def move_in_direction(self, delta_row, delta_col):
         """
-        Moves all tiles in the grid to the left. This method updates the grid by shifting
-        tiles to the left, merging tiles when possible, and then adding a new random tile
-        to the grid.
+        Moves the tiles in the game board in the specified direction.
 
-        The method performs the following steps:
-        1. Resets the `has_merged` matrix to track which tiles have merged during this move.
-        2. Iterates through each row and shifts non-zero tiles to the left.
-        3. Calls `shift_tile` to handle the actual shifting and merging of tiles.
-        4. Adds a new random tile to the grid after all possible shifts and merges.
+        Args:
+            delta_row (int): The change in the row index to determine the direction of movement.
+            delta_col (int): The change in the column index to determine the direction of movement.
 
-        Note:
-            - The `shift_tile` method is responsible for the logic of shifting and merging tiles.
-            - The `add_random_tile` method is responsible for adding a new tile to the grid.
-
+        This method resets the merge status of all tiles, then iterates through the board to shift
+        tiles in the specified direction. After shifting, it adds a new random tile to the board.
         """
-        self.has_merged = [[0] * self.size for _ in range(self.size)]
+        self.has_merged.fill(False)  # Reset has_merged
         for r in range(self.size):
-            for c in range(1, self.size):
-                if self.grid[r][c] != 0:
-                    self.shift_tile(r, c, 0, -1)  
-        self.add_random_tile(0, -1)  
-
-    def move_right(self):
-        """
-        Moves all tiles in the grid to the right. This method updates the grid by shifting
-        tiles to the right and merging them according to the game rules. After shifting and 
-        merging, a new random tile is added to the grid.
-
-        The method performs the following steps:
-        1. Resets the `has_merged` matrix to track which tiles have merged during this move.
-        2. Iterates through each row and shifts tiles to the right.
-        3. Calls `shift_tile` to handle the movement and merging of tiles.
-        4. Adds a new random tile to the grid in a position affected by the move.
-
-        Note:
-        - The `shift_tile` method is responsible for the actual shifting and merging logic.
-        - The `add_random_tile` method adds a new tile to the grid after the move.
-
-        Returns:
-            None
-        """
-        self.has_merged = [[0] * self.size for _ in range(self.size)]
-        for r in range(self.size):
-            for c in range(self.size - 2, -1, -1):
-                if self.grid[r][c] != 0:
-                    self.shift_tile(r, c, 0, 1)  
-        self.add_random_tile(0, 1) 
-
-    def move_up(self):
-        """
-        Executes a move up action in the game. This involves shifting all tiles
-        upwards, merging tiles if possible, and then adding a new random tile
-        to the grid.
-
-        The method performs the following steps:
-        1. Resets the has_merged matrix to track which tiles have merged during this move.
-        2. Iterates through each column, starting from the second row, and shifts tiles upwards.
-        3. Calls the shift_tile method to handle the actual shifting and merging of tiles.
-        4. Adds a new random tile to the grid after all possible shifts and merges are done.
-
-        Note:
-        - The grid is assumed to be a square matrix.
-        - The shift_tile method is expected to handle the logic for shifting and merging tiles.
-        - The add_random_tile method is expected to handle the logic for adding a new tile to the grid.
-
-        Returns:
-        None
-        """
-        self.has_merged = [[0] * self.size for _ in range(self.size)]
-        for r in range(1, self.size):
             for c in range(self.size):
-                if self.grid[r][c] != 0:
-                    self.shift_tile(r, c, -1, 0)  
-        self.add_random_tile(-1, 0) 
-
-    def move_down(self):
-        """
-        Moves all tiles in the grid downwards. This method updates the grid by shifting
-        tiles down, merging them if possible, and then adding a new random tile at the top.
-
-        The method performs the following steps:
-        1. Resets the `has_merged` matrix to track which tiles have merged during this move.
-        2. Iterates over the grid from the second-to-last row to the first row.
-        3. For each tile that is not empty, attempts to shift it downwards.
-        4. After all possible shifts and merges, adds a new random tile at the top.
-
-        Note:
-        - The `shift_tile` method is used to handle the actual shifting and merging of tiles.
-        - The `add_random_tile` method is used to add a new tile after the move.
-
-        Returns:
-        None
-        """
-        self.has_merged = [[0] * self.size for _ in range(self.size)]
-        for r in range(self.size - 2, -1, -1):
-            for c in range(self.size):
-                if self.grid[r][c] != 0:
-                    self.shift_tile(r, c, 1, 0)  
-        self.add_random_tile(1, 0)  
+                # Define the actual position to move based on direction
+                new_r = r + delta_row
+                new_c = c + delta_col
+                if (0 <= new_r < self.size) and (0 <= new_c < self.size):
+                    # Logic for shifting tiles
+                    self.shift_tile(r, c, delta_row, delta_col)
+        self.add_random_tile(delta_row, delta_col)
 
     def shift_tile(self, r, c, delta_row, delta_col):
         """
