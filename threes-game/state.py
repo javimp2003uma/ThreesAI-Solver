@@ -382,3 +382,19 @@ class State:
             int: The total points of the current game state.
         """
         return sum(3 ** (1 + math.log2(val / 3)) for val in self.grid.flatten() if val >= 3)
+    
+    def maxPoints(self):
+        """
+        Calculate the maximum possible points that can be achieved in the game.
+        This assumes that all cells in the grid have the value 768.
+        
+        Args:
+            size (int): The size of the grid (e.g., 4 for a 4x4 grid).
+        
+        Returns:
+            int: The maximum possible points that can be achieved in the grid.
+        """
+        max_tile_value = 768
+        points_per_tile = 3 ** (1 + math.log2(max_tile_value / 3))  # Points for a single 768 tile
+        total_points = points_per_tile * (self.size ** 2)  # Multiply by total number of tiles
+        return total_points

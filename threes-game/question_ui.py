@@ -6,6 +6,7 @@ from algorithms.strategy.dijkstra import Dijkstra
 from algorithms.strategy.max_value_and_adjacent import MaxValueAndAdjacent
 from algorithms.strategy.max_tiles_combination_potential import MaxTilesCombinationPotential
 from algorithms.strategy.max_tile_and_free_cells import MaxTileAndFreeCells 
+from algorithms.strategy.max_achievable_minus_current import MaxAchievableMinusCurrentScore
 
 from structures.utils import ALGORITHMS, GAME_MODES
 
@@ -75,7 +76,7 @@ class QuestionUI:
                     pregunta_heuristic.place(x=200, y=400)
 
                 if input_heuristic is None:
-                    input_heuristic = tk.OptionMenu(ventana, variable_heuristic, "More Free Cells", "Number No Matches", "MaxValueAndAdjacent", "Dijkstra", "MaxTilesCombinationPotencial", "MaxTilesAndFreeCells")
+                    input_heuristic = tk.OptionMenu(ventana, variable_heuristic, "More Free Cells", "Number No Matches", "MaxValueAndAdjacent", "Dijkstra", "MaxTilesCombinationPotencial", "MaxTilesAndFreeCells", "MaxAchievableMinusCurrentScore")
                     input_heuristic.place(x=200, y=450)
             else:
                 if pregunta_heuristic is not None:
@@ -119,6 +120,8 @@ class QuestionUI:
                         heuristic = MaxTilesCombinationPotential()
                     elif heuristic_aux == "MaxTilesAndFreeCells":
                         heuristic = MaxTileAndFreeCells()
+                    elif heuristic_aux == "MaxAchievableMinusCurrentScore":
+                        heuristic = MaxAchievableMinusCurrentScore()
 
             # Guardar los valores y cerrar la ventana
             self.result = (game_mode, seed, algorithm, heuristic)
