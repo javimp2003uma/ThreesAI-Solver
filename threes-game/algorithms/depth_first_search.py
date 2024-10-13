@@ -6,7 +6,8 @@ from structures.node import Node
 
 class DepthFirstSearch(SearchAlgorithm):
 
-    def __init__(self, initial_state: State, heuristic):
+    def __init__(self, initial_state: State, heuristic, headless = False):
+        self.headless = headless
         self.result, self.path, self.moves_list = self.run_algorithm(initial_state.clone_state())
         self.it = 0
 
@@ -23,7 +24,7 @@ class DepthFirstSearch(SearchAlgorithm):
             n = ABIERTOS.pop()  # 4. Seleccionar primero de abiertos y borrarlo de abiertos
             CERRADOS.append(n)  # 4. añadirlo a cerrados
             #print(n.value.grid)
-            print(f"ABIERTOS: {len(ABIERTOS)} | CERRADOS: {len(CERRADOS)} | PROFUNDIDAD: {len(n.antecesores())}")
+            if not self.headless: print(f"ABIERTOS: {len(ABIERTOS)} | CERRADOS: {len(CERRADOS)} | PROFUNDIDAD: {len(n.antecesores())}")
 
             if n.value.completed_state():  # 5. Si n es objetivo devolvemos el camino de s hasta n en A
                 return "ÉXITO", n.antecesores() + [n], n.moves_list()

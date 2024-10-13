@@ -6,8 +6,9 @@ import heapq  # Usamos una cola de prioridad para A*
 
 class AStar(SearchAlgorithm):
 
-    def __init__(self, initial_state: State, heuristic):
+    def __init__(self, initial_state: State, heuristic, headless = False):
         # Ejecuta el algoritmo A* y almacena el resultado, la ruta y la lista de movimientos
+        self.headless = headless
         self.heuristic = heuristic
         self.result, self.path, self.moves_list = self.run_algorithm(initial_state.clone_state())
         self.it = 0 
@@ -25,7 +26,7 @@ class AStar(SearchAlgorithm):
 
             _, n = heapq.heappop(ABIERTOS)  # PASO 4 Seleccionar n <- primero(ABIERTOS).(menor f_cost)
             CERRADOS.append(n)  # PASO 4 Borrar n de ABIERTOS y añadirlo a CERRADOS.
-            print(f"ABIERTOS: {len(ABIERTOS)} | CERRADOS: {len(CERRADOS)} | PROFUNDIDAD: {len(n.antecesores())}")
+            if not self.headless: print(f"ABIERTOS: {len(ABIERTOS)} | CERRADOS: {len(CERRADOS)} | PROFUNDIDAD: {len(n.antecesores())}")
 
             if n.value.completed_state():  #PASO 5. Si n es objetivo, 
                 return "ÉXITO", n.antecesores() + [n], n.moves_list() #PASO 5 entonces devolver el camino de s hasta n en A.
