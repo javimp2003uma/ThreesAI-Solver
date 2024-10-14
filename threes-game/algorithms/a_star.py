@@ -16,7 +16,7 @@ class AStar(SearchAlgorithm):
         g_cost = {s: 0}  # Coste desde el inicio hasta cada nodo
         f_cost = {s: self.heuristic.evaluate(s)}  # Coste estimado total (g + h)
 
-        A = Node(s)  # PASO 1 Crear un árbol de búsqueda A con raíz en s
+        A = Node(s, f_cost=self.heuristic.evaluate(s))  # PASO 1 Crear un árbol de búsqueda A con raíz en s
         ABIERTOS = []  # PASO 1 Lista de nodos ABIERTOS con s.
         heapq.heappush(ABIERTOS, (f_cost[s], A))  # PASO 1 Lista de nodos ABIERTOS con s. 
         open_set = {s: A}  # Diccionario para nodos en ABIERTOS
@@ -42,7 +42,7 @@ class AStar(SearchAlgorithm):
                 # if(self.heuristic.evaluate(n.value)- self.heuristic.evaluate(n2.value) > n.value.edge_cost(n2.value)):
                 #     raise Exception("Heuristic is not monotonous")
                 f_cost_n2 = tentative_g_cost + self.heuristic.evaluate(n2.value)
-
+                n2.update_f_cost(tentative_g_cost, self.heuristic.evaluate(n2.value))
                 # PASO 7a. Si n2 es nuevo (n2 no está ABIERTO ni CERRADO), 
                 if n2.value not in CERRADOS and n2.value not in open_set: 
                     # PASO 7a.i. Puntero de n2 hacia n
@@ -73,9 +73,6 @@ class AStar(SearchAlgorithm):
                 #     if n2.value not in open_set:
                 #         heapq.heappush(ABIERTOS, (f_cost[n2.value], n2))
                 #         open_set[n2.value] = n2
-
-
-
 
         return "FRACASO", [], []  # PASO 3 Si ABIERTOS está vacía, entonces devolver ‘FRACASO’. 
 

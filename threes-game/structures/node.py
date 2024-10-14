@@ -3,11 +3,11 @@ import pygame
 from state import State
 
 class Node:
-    def __init__(self, value:State, move_to_node=None, father=None):
+    def __init__(self, value:State, move_to_node=None, father=None, f_cost = 0):
         self.value = value
         self.move_to_node = move_to_node
         self.father = father
-        self.f_cost = 0
+        self.f_cost = f_cost
 
     def __eq__(self, other):
         if not isinstance(other, Node):
@@ -16,7 +16,7 @@ class Node:
     
     def __lt__(self, other):
         # Aquí puedes definir cómo comparar dos nodos
-        return self.f_cost < other.f_cost  # Asegúrate de que f_cost esté definido
+        return self.f_cost < other.f_cost
 
     def __hash__(self):
         return hash(self.value)
@@ -61,3 +61,5 @@ class Node:
 
         return [move for move in sucesores if move not in antecesores]
 
+    def update_f_cost(self, g_cost, h_cost):
+        self.f_cost = g_cost + h_cost

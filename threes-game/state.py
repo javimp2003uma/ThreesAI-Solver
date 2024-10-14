@@ -126,10 +126,10 @@ class State:
             State: A new instance of State with the same properties as the current state.
         """
         state = State(self.seed, self.size)
-        state.rnd.setstate(self.rnd.getstate())
         state.grid = np.array(self.grid)
         state.has_merged = self.has_merged
         state.next_number = self.next_number
+        state.rnd.setstate(self.rnd.getstate())
         return state
 
     def move(self, direction):
@@ -152,7 +152,7 @@ class State:
         if direction in directions:
             delta_row, delta_col = directions[direction]
             self.move_in_direction(delta_row, delta_col)
-            self.gen_next_number()
+            
         else:
             raise ValueError("Invalid direction. Use 'LEFT', 'RIGHT', 'UP', or 'DOWN'.")
 
@@ -167,31 +167,36 @@ class State:
         and merging, it adds a new random tile to the grid.
         """
         self.has_merged.fill(False)  # Resetear el estado de fusiones
-
+        has_move = False
         if delta_col != 0:  # Movimiento horizontal
             if delta_col == 1:  # Movimiento a la derecha
                 for r in range(self.size):
                     for c in range(self.size - 1, -1, -1):
                         if self.grid[r][c] != 0:
-                            self.shift_tile(r, c, 0, 1)  # Desplazar a la derecha
+                           if self.shift_tile(r, c, 0, 1):  # Desplazar a la derecha
+                                    has_move=True
             elif delta_col == -1:  # Movimiento a la izquierda
                 for r in range(self.size):
                     for c in range(self.size):
                         if self.grid[r][c] != 0:
-                            self.shift_tile(r, c, 0, -1)  # Desplazar a la izquierda
+                           if self.shift_tile(r, c, 0, -1):  # Desplazar a la izquierda
+                                 has_move=True
 
         elif delta_row != 0:  # Movimiento vertical
             if delta_row == 1:  # Movimiento hacia abajo
                 for r in range(self.size - 1, -1, -1):
                     for c in range(self.size):
                         if self.grid[r][c] != 0:
-                            self.shift_tile(r, c, 1, 0)  # Desplazar hacia abajo
+                            if self.shift_tile(r, c, 1, 0):  # Desplazar hacia abajo
+                                has_move=True
             elif delta_row == -1:  # Movimiento hacia arriba
                 for r in range(self.size):
                     for c in range(self.size):
                         if self.grid[r][c] != 0:
-                            self.shift_tile(r, c, -1, 0)  # Desplazar hacia arriba
-        self.add_random_tile(delta_row, delta_col)
+                            if self.shift_tile(r, c, -1, 0):  # Desplazar hacia arriba
+                                has_move=True
+        if has_move:
+            self.add_random_tile(delta_row, delta_col)
 
 
     def shift_tile(self, r, c, delta_row, delta_col):
@@ -209,17 +214,20 @@ class State:
             delta_col (int): The column change to determine the new position.
         
         Returns:
-            None
+            bool: True if the tile was moved or merged, False otherwise.
         """
         new_r, new_c = r + delta_row, c + delta_col
         if (0 <= new_r < self.size and 0 <= new_c < self.size):
             if self.grid[new_r][new_c] == 0:
                 self.grid[new_r][new_c] = self.grid[r][c]
                 self.grid[r][c] = 0
+                return True
             elif self.can_merge(self.grid[r][c], self.grid[new_r][new_c]) and not self.has_merged[new_r][new_c]:
                 self.grid[new_r][new_c] += self.grid[r][c]
                 self.grid[r][c] = 0
                 self.has_merged[new_r][new_c] = 1
+                return True
+        return False
 
     def add_random_tile(self, delta_row, delta_col):
         """
@@ -232,30 +240,37 @@ class State:
         The method places the next_number tile in an appropriate empty spot
         based on the direction of movement and then generates the next number.
         """
+        i = 0
         if delta_row == 0:  # Horizontal movement
             if delta_col == -1:  # Left
                 row = [(r) for r in range(self.size) if self.grid[r][self.size-1] == 0]
                 if row:
                     self.grid[self.rnd.choice(row)][self.size-1] = self.next_number
                     self.gen_next_number()
+                    i +=1
             else:  # Right
                 row = [(r) for r in range(self.size) if self.grid[r][0] == 0]
                 if row:
                     self.grid[self.rnd.choice(row)][0] = self.next_number
                     self.gen_next_number()
+                    i +=1
         else:  # Vertical movement
             if delta_row == -1:  # Up
                 col = [(c) for c in range(self.size) if self.grid[self.size-1][c] == 0]
                 if col:
                     self.grid[self.size-1][self.rnd.choice(col)] = self.next_number
                     self.gen_next_number()
+                    i +=1
 
             else:  # Down
                 col = [(c) for c in range(self.size) if self.grid[0][c] == 0]
                 if col:
                     self.grid[0][self.rnd.choice(col)] = self.next_number
                     self.gen_next_number()
-
+                    i +=1
+        if i != 1:
+            raise ValueError("PUTAMADRE SE MURIO")
+        
     def can_merge(self, a, b):
         """
         Determines if two tiles can be merged in the game.
