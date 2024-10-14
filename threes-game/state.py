@@ -126,10 +126,10 @@ class State:
             State: A new instance of State with the same properties as the current state.
         """
         state = State(self.seed, self.size)
+        state.rnd.setstate(self.rnd.getstate())
         state.grid = np.array(self.grid)
         state.has_merged = self.has_merged
         state.next_number = self.next_number
-        state.rnd.setstate(self.rnd.getstate())
         return state
 
     def move(self, direction):
@@ -240,37 +240,30 @@ class State:
         The method places the next_number tile in an appropriate empty spot
         based on the direction of movement and then generates the next number.
         """
-        i = 0
         if delta_row == 0:  # Horizontal movement
             if delta_col == -1:  # Left
                 row = [(r) for r in range(self.size) if self.grid[r][self.size-1] == 0]
                 if row:
                     self.grid[self.rnd.choice(row)][self.size-1] = self.next_number
                     self.gen_next_number()
-                    i +=1
             else:  # Right
                 row = [(r) for r in range(self.size) if self.grid[r][0] == 0]
                 if row:
                     self.grid[self.rnd.choice(row)][0] = self.next_number
                     self.gen_next_number()
-                    i +=1
         else:  # Vertical movement
             if delta_row == -1:  # Up
                 col = [(c) for c in range(self.size) if self.grid[self.size-1][c] == 0]
                 if col:
                     self.grid[self.size-1][self.rnd.choice(col)] = self.next_number
                     self.gen_next_number()
-                    i +=1
 
             else:  # Down
                 col = [(c) for c in range(self.size) if self.grid[0][c] == 0]
                 if col:
                     self.grid[0][self.rnd.choice(col)] = self.next_number
                     self.gen_next_number()
-                    i +=1
-        if i != 1:
-            raise ValueError("PUTAMADRE SE MURIO")
-        
+
     def can_merge(self, a, b):
         """
         Determines if two tiles can be merged in the game.
