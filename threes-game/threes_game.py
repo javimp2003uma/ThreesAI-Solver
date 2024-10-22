@@ -110,51 +110,74 @@ class ThreeGame:
 
     def draw_next_number_info(self):
         """
-        Draw the next number information on the screen.
+        Draw the next number information and the seed on the screen.
         """
         label_font = pygame.font.Font(None, 25)
         next_num_font = pygame.font.Font(None, 35)
 
+        # Draw the seed label and value
+        seed_label_surf = label_font.render("Seed", True, CELL_COLOR_ONES)
+        seed_label_rect = seed_label_surf.get_rect(
+            center=(self.size * (CELL_SIZE + MARGIN) + (NEXT_NUM_SPACE - MARGIN) // 2,
+                    self.size * (CELL_SIZE + MARGIN) // 2 - 40)
+        )
+        seed_value_surf = label_font.render(f"{self.seed}", True, CELL_COLOR_ONES)
+        seed_value_rect = seed_value_surf.get_rect(
+            center=(self.size * (CELL_SIZE + MARGIN) + (NEXT_NUM_SPACE - MARGIN) // 2,
+                    self.size * (CELL_SIZE + MARGIN) // 2 - 20)
+        )
+
+        # Draw the "Next Number" label and value
         label_surf = label_font.render("Next Number", True, CELL_COLOR_ONES)
         label_rect = label_surf.get_rect(
             center=(self.size * (CELL_SIZE + MARGIN) + (NEXT_NUM_SPACE - MARGIN) // 2,
-                    self.size * (CELL_SIZE + MARGIN) // 2 - 10)
+                    self.size * (CELL_SIZE + MARGIN) // 2 + 10)
         )
-
         next_num_surf = next_num_font.render(f"{self.state.next_number}", True, CELL_COLOR_ONES)
         next_num_rect = next_num_surf.get_rect(
             center=(self.size * (CELL_SIZE + MARGIN) + (NEXT_NUM_SPACE - MARGIN) // 2,
-                    self.size * (CELL_SIZE + MARGIN) // 2 + 10)
+                    self.size * (CELL_SIZE + MARGIN) // 2 + 30)
         )
 
+        # Draw background rectangle for text
         pygame.draw.rect(
             self.screen,
             CELL_COLOR_DEFAULT,
             (self.size * (CELL_SIZE + MARGIN) - 2,
-             self.size * (CELL_SIZE + MARGIN) // 2 - 25,
-             NEXT_NUM_SPACE - MARGIN + 5, 50)
+            self.size * (CELL_SIZE + MARGIN) // 2 - 55,
+            NEXT_NUM_SPACE - MARGIN + 5, 110)
         )
 
-        self.screen.blits([(label_surf, label_rect), (next_num_surf, next_num_rect)])
+        # Blit the seed, "Next Number" label, and next number value
+        self.screen.blits([
+            (seed_label_surf, seed_label_rect),
+            (seed_value_surf, seed_value_rect),
+            (label_surf, label_rect),
+            (next_num_surf, next_num_rect)
+        ])
+
 
     def show_points_window(self):
         """
         Display a window with the final points when the game ends.
 
-        This method renders the end-game message and waits for the user
-        to press a key to close the game.
+        This method renders the end-game message with a translucent overlay
+        and waits for the user to press a key to close the game.
         """
-        self.screen.fill(BACKGROUND_COLOR)
+        # Create a translucent surface
+        overlay = pygame.Surface(self.screen.get_size(), pygame.SRCALPHA)
+        overlay.fill((0, 0, 0, 150))  # (R, G, B, A), where A is the alpha (transparency)
+
         font = pygame.font.Font(None, 34)
         total_points = round(self.state.total_points(), 2)
 
-        line1 = font.render("Game Over", True, TEXT_COLOR_DARK)
-        line2 = font.render(f"You scored a total of {total_points} points", True, TEXT_COLOR_DARK)
+        line1 = font.render("Game Over", True, TEXT_COLOR_LIGHT)
+        line2 = font.render(f"You scored a total of {total_points} points", True, TEXT_COLOR_LIGHT)
 
         rect1 = line1.get_rect(center=((self.size * (CELL_SIZE + MARGIN) + NEXT_NUM_SPACE) // 2,
-                                         (self.size * (CELL_SIZE + MARGIN)) // 2 - 20))
+                                        (self.size * (CELL_SIZE + MARGIN)) // 2 - 20))
         rect2 = line2.get_rect(center=((self.size * (CELL_SIZE + MARGIN) + NEXT_NUM_SPACE) // 2,
-                                         (self.size * (CELL_SIZE + MARGIN)) // 2 + 20))
+                                        (self.size * (CELL_SIZE + MARGIN)) // 2 + 20))
 
         waiting, blink_timer, show_text = True, 0, True
         while waiting:
@@ -166,7 +189,9 @@ class ThreeGame:
             if blink_timer % 5 == 0:
                 show_text = not show_text
 
-            self.screen.fill(BACKGROUND_COLOR)
+            self.draw_grid()  # Redraw the grid behind the overlay
+            self.screen.blit(overlay, (0, 0))  # Apply the translucent overlay
+
             if show_text:
                 self.screen.blit(line1, rect1)
                 self.screen.blit(line2, rect2)
