@@ -312,37 +312,15 @@ class State:
             e2 (State): The state to which the transition is being evaluated.
 
         Returns:
-            int: The difference in total points between the given state (e2) and the current state.
+            float: The cost based on the number of cells that have changed between
+                the current state and the new state.
         """
-        
-        celdas_movidas = 0
-
-        valores_iniciales = {}
-
-        
-        for i in range(self.grid.shape[0]):
-            for j in range(self.grid.shape[1]):
-                if self.grid[i, j] != 0:  
-                    valores_iniciales[(i, j)] = self.grid[i, j]
-
-        valores_finales = {}
-        for i in range(e2.grid.shape[0]):
-            for j in range(e2.grid.shape[1]):
-                if e2.grid[i, j] != 0:  
-                    valores_finales[(i, j)] = e2.grid[i, j]
-                    
-                    if (i, j) not in valores_iniciales or e2.grid[i, j] != valores_iniciales.get((i, j), 0):
-                        celdas_movidas += 1
-
-        
-        celdas_movidas -= 1
-        
-        if celdas_movidas > 0:
-            coste = 1 / celdas_movidas  
-        else:
-            coste = 10  
-        
-        return coste
+        celdas_movidas = sum(
+            self.grid[i, j] != e2.grid[i, j]
+            for i in range(self.grid.shape[0])
+            for j in range(self.grid.shape[1])
+        )
+        return 1 / celdas_movidas if celdas_movidas > 0 else 0
 
 
     def total_points(self):
