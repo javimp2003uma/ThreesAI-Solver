@@ -141,15 +141,15 @@ class QuestionUI:
         )
         boton.place(x=200, y=500)
 
-        self.result = None  # Inicializa el resultado
+        self.result = None 
 
-        # Método para manejar el cierre de la ventana
+
         def on_closing():
-            self.result = None  # O cualquier valor que desees
-            ventana.destroy()  # Cierra la ventana
+            ventana.destroy() 
 
-        # Configurar el protocolo para el botón de cerrar
+   
         ventana.protocol("WM_DELETE_WINDOW", on_closing)
         ventana.mainloop()
 
-        return self.result
+        return self.result if self.result else (None, None, None, None)  
+
