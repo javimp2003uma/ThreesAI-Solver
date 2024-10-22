@@ -4,80 +4,82 @@ from state import State
 from structures.node import Node
 
 class AStar(SearchAlgorithm):
+    """Class that implements the A* algorithm for pathfinding."""
 
     def __init__(self, initial_state: State, heuristic, headless=False):
-        # Ejecuta el algoritmo A* y almacena el resultado, la ruta y la lista de movimientos
+        """
+        Initializes the A* algorithm.
+
+        :param initial_state: The initial state from which to start the search.
+        :param heuristic: The heuristic function used for cost estimation.
+        :param headless: Indicates whether the search runs without a graphical interface.
+        """
         self.headless = headless
         self.heuristic = heuristic
         self.result, self.path, self.moves_list = self.run_algorithm(initial_state.clone_state())
         self.it = 0
 
     def run_algorithm(self, s):
-        g_cost = {s: 0}  # Coste desde el inicio hasta cada nodo
-        f_cost = {s: self.heuristic.evaluate(s)}  # Coste estimado total (g + h)
+        """
+        Executes the A* algorithm to find the shortest path.
 
-        A = Node(s, f_cost=self.heuristic.evaluate(s))  # PASO 1 Crear un árbol de búsqueda A con raíz en s
-        ABIERTOS = []  # PASO 1 Lista de nodos ABIERTOS con s.
-        heapq.heappush(ABIERTOS, (f_cost[s], A))  # PASO 1 Lista de nodos ABIERTOS con s. 
-        open_set = {s: A}  # Diccionario para nodos en ABIERTOS
-        CERRADOS = set()  # PASO 2 Crear un conjunto de nodos CERRADOS vacía. 
+        :param s: The initial state from which the algorithm runs.
+        :return: A tuple indicating the result of the search,
+                 the path found, and the list of moves.
+        """
+        g_cost = {s: 0}  # Cost from the start to each node
+        f_cost = {s: self.heuristic.evaluate(s)}  # Estimated total cost (g + h)
 
-        while ABIERTOS:
+        A = Node(s, f_cost=self.heuristic.evaluate(s))  # Create a search tree A with root at s
+        OPEN_SET = []  # List of OPEN nodes with s
+        heapq.heappush(OPEN_SET, (f_cost[s], A))  # Initialize the OPEN set with s
+        open_set = {s: A}  # Dictionary for nodes in OPEN_SET
+        CLOSED_SET = set()  # Create an empty CLOSED set
 
-            _, n = heapq.heappop(ABIERTOS)  # PASO 4 Seleccionar n <- primero(ABIERTOS).(menor f_cost)
-            open_set.pop(n.value, None)  # Eliminar n de ABIERTOS
-            CERRADOS.add(n.value)  # PASO 4 Borrar n de ABIERTOS y añadirlo a CERRADOS.
-            if not self.headless: 
-                print(f"ABIERTOS: {len(ABIERTOS)} | CERRADOS: {len(CERRADOS)} | PROFUNDIDAD: {len(n.antecesores())}")
+        while OPEN_SET:
+            _, n = heapq.heappop(OPEN_SET)  # Select the node with the lowest f_cost
+            open_set.pop(n.value, None)  # Remove n from OPEN_SET
+            CLOSED_SET.add(n.value)  # Add n to CLOSED_SET
+            if not self.headless:
+                print(f"OPEN_SET: {len(OPEN_SET)} | CLOSED_SET: {len(CLOSED_SET)} | DEPTH: {len(n.antecesores())}")
 
-            if n.value.completed_state():  # PASO 5. Si n es objetivo, 
-                return "ÉXITO", n.antecesores() + [n], n.moves_list()  # PASO 5 entonces devolver el camino de s hasta n en A.
+            if n.value.completed_state():  # If n is the goal
+                return "SUCCESS", n.antecesores() + [n], n.moves_list()  # Return the found path
 
-            M = n.sucesores_sin_antecesores()  # PASO 6 Expandir n. M <- sucesores(n, G) – antecesores(n, A). 
+            M = n.sucesores_sin_antecesores()  # Expand n to get its successors
 
-            for n2 in M:  # PASO 7. Para cada n2 en M,
-                tentative_g_cost = g_cost[n.value] + n.value.edge_cost(n2.value)  # Coste desde el nodo inicial hasta n2
+            for n2 in M:  # For each successor n2
+                tentative_g_cost = g_cost[n.value] + n.value.edge_cost(n2.value)  # Cost to reach n2
 
-                # Restriccion de monotonía
-                # if(self.heuristic.evaluate(n.value)- self.heuristic.evaluate(n2.value) > n.value.edge_cost(n2.value)):
-                #     raise Exception("Heuristic is not monotonous")
                 f_cost_n2 = tentative_g_cost + self.heuristic.evaluate(n2.value)
                 n2.update_f_cost(tentative_g_cost, self.heuristic.evaluate(n2.value))
-                # PASO 7a. Si n2 es nuevo (n2 no está ABIERTO ni CERRADO), 
-                if n2.value not in CERRADOS and n2.value not in open_set: 
-                    # PASO 7a.i. Puntero de n2 hacia n
-                    n2.father = n
-                    # Añadir valores de g y f
+                # If n2 is new
+                if n2.value not in CLOSED_SET and n2.value not in open_set:
+                    n2.father = n  # Pointer of n2 to n
                     g_cost[n2.value] = tentative_g_cost
                     f_cost[n2.value] = f_cost_n2
-                    # PASO 7a.ii. Añadir n2 a ABIERTOS
-                    heapq.heappush(ABIERTOS, (f_cost[n2.value], n2))
-                    open_set[n2.value] = n2  # Añadir n2 al conjunto ABIERTOS
+                    heapq.heappush(OPEN_SET, (f_cost[n2.value], n2))  # Add n2 to OPEN_SET
+                    open_set[n2.value] = n2  # Add n2 to the OPEN set
 
-                # Paso 4b. Si n2 no es nuevo, y el valor de g(n2) es menor a través del nuevo camino,
-                elif  tentative_g_cost < g_cost[n2.value]:
-                    n2.father = n  # Paso 4b.i. Puntero de n2 hacia n(padre)
-                    g_cost[n2.value] = tentative_g_cost  # Actualizar g_cost
-                    f_cost[n2.value] = f_cost_n2  # Actualizar f_cost
+                # If n2 is not new, but the g(n2) cost is lower through the new path
+                elif tentative_g_cost < g_cost[n2.value]:
+                    n2.father = n  # Pointer of n2 to n
+                    g_cost[n2.value] = tentative_g_cost  # Update g_cost
+                    f_cost[n2.value] = f_cost_n2  # Update f_cost
 
-                    if n2.value not in CERRADOS:  # Paso 4b.ii. Si n2 no está en CERRADOS, añadirlo a ABIERTOS
-                        heapq.heappush(ABIERTOS, (f_cost[n2.value], n2))  # Añadir el nodo a ABIERTOS
-                        open_set[n2.value] = n2  # Añadir n2 al conjunto ABIERTOS
+                    if n2.value not in CLOSED_SET:  # If n2 is not in CLOSED_SET, add it to OPEN_SET
+                        heapq.heappush(OPEN_SET, (f_cost[n2.value], n2))  # Add the node to OPEN_SET
+                        open_set[n2.value] = n2  # Add n2 to the OPEN set
 
-                #Simplificación del código 
-                # if n2.value not in CERRADOS and (n2.value not in g_cost or tentative_g_cost < g_cost[n2.value]):
-                #     n2.father = n
-                #     g_cost[n2.value] = tentative_g_cost
-                #     f_cost[n2.value] = f_cost_n2
-
-                #     if n2.value not in open_set:
-                #         heapq.heappush(ABIERTOS, (f_cost[n2.value], n2))
-                #         open_set[n2.value] = n2
-
-        return "FRACASO", [], []  # PASO 3 Si ABIERTOS está vacía, entonces devolver ‘FRACASO’. 
+        return "FAILURE", [], []  # If OPEN_SET is empty, return 'FAILURE'.
 
     def get_next_move(self):
-        if self.result != "FRACASO" and self.it < len(self.moves_list):
+        """
+        Gets the next move in the sequence of moves.
+
+        :return: The next move, or None if the end has been reached.
+        """
+        if self.result != "FAILURE" and self.it < len(self.moves_list):
             next_move = self.moves_list[self.it]
             self.it += 1
             return next_move

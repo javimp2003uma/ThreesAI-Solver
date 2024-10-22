@@ -314,13 +314,8 @@ class State:
         Returns:
             int: The difference in total points between the given state (e2) and the current state.
         """
-        num_huecos_prev = np.count_nonzero(self.grid)
-        num_huecos_next = np.count_nonzero(e2.grid)
-        total = num_huecos_prev - num_huecos_next
-        print("Puntos: ", self.total_points())
-        if total < 0:
-            return 1 / (abs(total))         
-        return total + 1
+        
+        return e2.total_points() - self.total_points()
 
     def total_points(self):
         """
@@ -335,7 +330,7 @@ class State:
         """
         return sum(3 ** (1 + math.log2(val / 3)) for val in self.grid.flatten() if val >= 3)
     
-    def maxPoints(self):
+    def max_points(self):
         """
         Calculate the maximum possible points that can be achieved in the game.
         This assumes that all cells in the grid have the value 768.

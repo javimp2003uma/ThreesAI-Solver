@@ -7,48 +7,43 @@ from algorithms.strategy.max_value_and_adjacent import MaxValueAndAdjacent
 from algorithms.strategy.max_tiles_combination_potential import MaxTilesCombinationPotential
 from algorithms.strategy.max_tile_and_free_cells import MaxTileAndFreeCells 
 from algorithms.strategy.max_achievable_minus_current import MaxAchievableMinusCurrentScore
-from algorithms.strategy.heuristic_maximize_score import HeuristicMaximizeScore
 from algorithms.strategy.min_non_free_cells import MinNonFreeCells
 from structures.utils import ALGORITHMS, GAME_MODES
 
 class QuestionUI:
+    """User interface for selecting game mode and algorithm in the THREES game."""
+
     def run(self):
+        """Initializes and runs the Tkinter window for game settings."""
         ventana = tk.Tk()
         ventana.title("THREES by Los Monotonos")
         ventana.config(width=675, height=600)
         ventana.resizable(False, False)
 
-        titulo_programa = tk.Label(text="THREES GAME", font="arial 30 bold", fg="black")
-        titulo_programa.place(x=200, y=20)
+        # Title and prompts
+        tk.Label(text="THREES GAME", font="arial 30 bold", fg="black").place(x=200, y=20)
+        tk.Label(text="¿Qué modo de juego desea?", font="arial 15 bold", fg="black").place(x=200, y=100)
 
-        preguntaUser = tk.Label(text="¿Qué modo de juego desea?", font="arial 15 bold", fg="black")
-        preguntaUser.place(x=200, y=100)
+        # Game mode selection
+        variable = tk.StringVar(ventana, "Elije el quién va a jugar")
+        tk.OptionMenu(ventana, variable, "USER", "IA").place(x=200, y=150)
 
-        variable = tk.StringVar(ventana)
-        variable.set("Elije el quién va a jugar")
-
-        inputUser = tk.OptionMenu(ventana, variable, "USER", "IA")
-        inputUser.place(x=200, y=150)
-
-        preguntaSeed = tk.Label(text="Introduzca una semilla", font="arial 15 bold", fg="black")
-        preguntaSeed.place(x=200, y=200)
-
+        # Seed input
+        tk.Label(text="Introduzca una semilla", font="arial 15 bold", fg="black").place(x=200, y=200)
         inputSeed = tk.Entry(ventana, font="arial 15 bold")
         inputSeed.place(x=200, y=250)
         inputSeed.insert(0, rnd.randint(0, 100000))
 
-        variableAlgorithm = tk.StringVar(ventana)
-        variableAlgorithm.set("Elije el algoritmo")
-
-        variable_heuristic = tk.StringVar(ventana)
-        variable_heuristic.set("Elije la heuristica")
+        # Algorithm and heuristic variables
+        variableAlgorithm = tk.StringVar(ventana, "Elije el algoritmo")
+        variable_heuristic = tk.StringVar(ventana, "Elije la heuristica")
 
         preguntaAlgorithm = None
         inputAlgorithm = None
-
         pregunta_heuristic = None
         input_heuristic = None
 
+        # Update algorithm menu based on game mode selection
         def update_algorithm_menu(*args):
             nonlocal preguntaAlgorithm, inputAlgorithm
 
@@ -58,27 +53,30 @@ class QuestionUI:
                     preguntaAlgorithm.place(x=200, y=300)
 
                 if inputAlgorithm is None:
-                    inputAlgorithm = tk.OptionMenu(ventana, variableAlgorithm, "Depth First Search", "Breadth First Search", "Greedy Search", "A*")
+                    inputAlgorithm = tk.OptionMenu(ventana, variableAlgorithm, 
+                        "Depth First Search", "Breadth First Search", "Greedy Search", "A*")
                     inputAlgorithm.place(x=200, y=350)
             else:
-                if preguntaAlgorithm is not None:
+                if preguntaAlgorithm:
                     preguntaAlgorithm.place_forget()
                     preguntaAlgorithm = None
 
-                if inputAlgorithm is not None:
+                if inputAlgorithm:
                     inputAlgorithm.place_forget()
                     inputAlgorithm = None
-            boton = tk.Button(
-            text="Comenzar Juego",
-            command=startGame,
-            bg="#4CAF50",
-            fg="white",
-            font=("Arial", 14, "bold"),
-            padx=20,
-            pady=10
-            )
-            boton.place(x=200, y=500)
 
+            # Start game button
+            tk.Button(
+                text="Comenzar Juego",
+                command=startGame,
+                bg="#4CAF50",
+                fg="white",
+                font=("Arial", 14, "bold"),
+                padx=20,
+                pady=10
+            ).place(x=200, y=500)
+
+        # Update heuristic menu based on algorithm selection
         def update_heuristic_menu(*args):
             nonlocal pregunta_heuristic, input_heuristic
 
@@ -88,21 +86,26 @@ class QuestionUI:
                     pregunta_heuristic.place(x=200, y=400)
 
                 if input_heuristic is None:
-                    input_heuristic = tk.OptionMenu(ventana, variable_heuristic, "More Free Cells", "Number No Matches", "MaxValueAndAdjacent", "Dijkstra", "MaxTilesCombinationPotencial", "MaxTilesAndFreeCells", "MaxAchievableMinusCurrentScore", "MinNonFreeCells", "maximizescore")
+                    input_heuristic = tk.OptionMenu(ventana, variable_heuristic, 
+                        "More Free Cells", "Number No Matches", "MaxValueAndAdjacent", "Dijkstra", 
+                        "MaxTilesCombinationPotencial", "MaxTilesAndFreeCells", 
+                        "MaxAchievableMinusCurrentScore", "MinNonFreeCells")
                     input_heuristic.place(x=200, y=450)
             else:
-                if pregunta_heuristic is not None:
+                if pregunta_heuristic:
                     pregunta_heuristic.place_forget()
                     pregunta_heuristic = None
 
-                if input_heuristic is not None:
+                if input_heuristic:
                     input_heuristic.place_forget()
                     input_heuristic = None
 
+        # Trace changes in selection variables
         variable.trace_add('write', update_algorithm_menu)
         variableAlgorithm.trace_add('write', update_heuristic_menu)
 
         def startGame():
+            """Starts the game with selected settings."""
             heuristic = None
             seed = inputSeed.get()
             game_mode_aux = variable.get()
@@ -113,48 +116,44 @@ class QuestionUI:
             else:
                 game_mode = GAME_MODES.IA
                 algorithm_aux = variableAlgorithm.get()
-                if algorithm_aux == "Depth First Search":
-                    algorithm = ALGORITHMS.DEPTH_FIRST_SEARCH
-                elif algorithm_aux == "Breadth First Search":
-                    algorithm = ALGORITHMS.BREADTH_FIRST_SEARCH
-                else:
-                    if algorithm_aux == "A*":
-                        algorithm = ALGORITHMS.A_STAR
-                    elif algorithm_aux == "Greedy Search":
-                        algorithm = ALGORITHMS.GREEDY_SEARCH
-                    heuristic_aux = variable_heuristic.get()
-                    if heuristic_aux == "More Free Cells":
-                        heuristic = MoreFreeCellsHighValue()
-                    elif heuristic_aux == "Number No Matches":
-                        heuristic = NumberEquals()
-                    elif heuristic_aux == "Dijkstra":
-                        heuristic = Dijkstra()
-                    elif heuristic_aux == "MaxValueAndAdjacent":
-                        heuristic = MaxValueAndAdjacent()
-                    elif heuristic_aux == "MaxTilesCombinationPotencial":
-                        heuristic = MaxTilesCombinationPotential()
-                    elif heuristic_aux == "MaxTilesAndFreeCells":
-                        heuristic = MaxTileAndFreeCells()
-                    elif heuristic_aux == "MaxAchievableMinusCurrentScore":
-                        heuristic = MaxAchievableMinusCurrentScore()
-                    elif heuristic_aux == "maximizescore":
-                        heuristic = HeuristicMaximizeScore()
-                    elif heuristic_aux == "MinNonFreeCells":
-                        heuristic = MinNonFreeCells()
+                algorithm = self.get_algorithm(algorithm_aux)
+                heuristic = self.get_heuristic(variable_heuristic.get())
 
-            # Guardar los valores y cerrar la ventana
+            # Save settings and close window
             self.result = (game_mode, seed, algorithm, heuristic)
             ventana.destroy()
 
-        self.result = None 
-
+        self.result = None
 
         def on_closing():
-            ventana.destroy() 
+            """Handles the window closing event."""
+            ventana.destroy()
 
-   
         ventana.protocol("WM_DELETE_WINDOW", on_closing)
         ventana.mainloop()
 
-        return self.result if self.result else (None, None, None, None)  
+        return self.result if self.result else (None, None, None, None)
 
+    def get_algorithm(self, algorithm_name):
+        """Maps algorithm names to their respective classes."""
+        mapping = {
+            "Depth First Search": ALGORITHMS.DEPTH_FIRST_SEARCH,
+            "Breadth First Search": ALGORITHMS.BREADTH_FIRST_SEARCH,
+            "A*": ALGORITHMS.A_STAR,
+            "Greedy Search": ALGORITHMS.GREEDY_SEARCH
+        }
+        return mapping.get(algorithm_name)
+
+    def get_heuristic(self, heuristic_name):
+        """Maps heuristic names to their respective classes."""
+        mapping = {
+            "More Free Cells": MoreFreeCellsHighValue(),
+            "Number No Matches": NumberEquals(),
+            "Dijkstra": Dijkstra(),
+            "MaxValueAndAdjacent": MaxValueAndAdjacent(),
+            "MaxTilesCombinationPotencial": MaxTilesCombinationPotential(),
+            "MaxTilesAndFreeCells": MaxTileAndFreeCells(),
+            "MaxAchievableMinusCurrentScore": MaxAchievableMinusCurrentScore(),
+            "MinNonFreeCells": MinNonFreeCells()
+        }
+        return mapping.get(heuristic_name)

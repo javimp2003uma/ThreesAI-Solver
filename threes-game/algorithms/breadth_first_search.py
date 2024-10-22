@@ -1,47 +1,64 @@
 from .search_algorithm import SearchAlgorithm
 from state import State
-
 from structures.node import Node
 
-
 class BreadthFirstSearch(SearchAlgorithm):
+    """Class that implements the Breadth-First Search (BFS) algorithm for pathfinding."""
 
-    def __init__(self, initial_state : State, heuristic):
+    def __init__(self, initial_state: State, heuristic):
+        """
+        Initializes the Breadth-First Search algorithm.
+
+        :param initial_state: The initial state from which to start the search.
+        :param heuristic: The heuristic function used (not utilized in BFS).
+        """
         self.result, self.path, self.moves_list = self.run_algorithm(initial_state.clone_state())
         self.it = 0
 
-    def run_algorithm(self, s): # se q se puede refactorizar pila, lo estoy haciendo literalmente como el pseudocodigo primero
-        A = Node(s) # 1. Crear arbol de busqueda con raiz en s
-        ABIERTOS = [Node(s)] # 1. Una lista de abiertos con s
+    def run_algorithm(self, s):
+        """
+        Executes the Breadth-First Search algorithm to find the shortest path.
 
-        CERRADOS = [] # 2. Crear una lista de cerrados vacia
+        :param s: The initial state from which the algorithm runs.
+        :return: A tuple indicating the result of the search,
+                 the path found, and the list of moves.
+        """
+        A = Node(s)  # 1. Create a search tree with root at s
+        OPEN_SET = [Node(s)]  # 1. Initialize the OPEN set with s
+
+        CLOSED_SET = []  # 2. Create an empty CLOSED set
 
         while True:
-            if ABIERTOS == []: # 3. Si abiertos esta vacia devolver fracaso
-                return "FRACASO", [], []
+            if not OPEN_SET:  # 3. If OPEN_SET is empty, return failure
+                return "FAILURE", [], []
 
-            n = ABIERTOS.pop(0) # 4. Seleccionar primero de abiertos y borrarlo de abiertos
-            CERRADOS.append(n) # 4. añadirlo a cerrados
-            print(f"ABIERTOS: {len(ABIERTOS)} | CERRADOS: {len(CERRADOS)} | PROFUNDIDAD: {len(n.antecesores())}")
+            n = OPEN_SET.pop(0)  # 4. Select the first node from OPEN_SET and remove it
+            CLOSED_SET.append(n)  # 4. Add n to CLOSED_SET
+            print(f"OPEN_SET: {len(OPEN_SET)} | CLOSED_SET: {len(CLOSED_SET)} | DEPTH: {len(n.antecesores())}")
 
-            if n.value.completed_state(): # 5. Si n es objetivo devolvemos el camino de s hasta n en A
-                return "ÉXITO", n.antecesores() + [n], n.moves_list()
-            
-            M = n.sucesores_sin_antecesores() # 6. Expandimos n
+            if n.value.completed_state():  # 5. If n is the goal, return the path from s to n
+                return "SUCCESS", n.antecesores() + [n], n.moves_list()
 
-            for n2 in M: # 7. Para cada n2 en M
-                if n2 not in ABIERTOS and n2 not in CERRADOS: # a. Si n2 es nuevo
-                    n2.father = n # i. Puntero de n2 a n
-                    ABIERTOS.append(n2) # ii. Lo añadimos a abiertos
-                else: # b. Si no es nuevo lo ignoramos
+            M = n.sucesores_sin_antecesores()  # 6. Expand n to get its successors
+
+            for n2 in M:  # 7. For each successor n2 in M
+                if n2 not in OPEN_SET and n2 not in CLOSED_SET:  # a. If n2 is new
+                    n2.father = n  # i. Pointer from n2 to n
+                    OPEN_SET.append(n2)  # ii. Add n2 to OPEN_SET
+                else:  # b. If n2 is not new, ignore it
                     pass
 
-            # 8. Ordenamos abiertos por antiguedad (ya estan ordenados por antiguedad)
-            # 9. Volvemos a 3 (es un bucle while, ya lo hace)
+            # 8. The OPEN_SET is already sorted by age due to how nodes are added
+            # 9. Repeat from step 3 (it's a while loop, so it will continue)
 
     def get_next_move(self):
-        if self.result != "FRACASO" and self.it < len(self.moves_list):
+        """
+        Gets the next move in the sequence of moves.
+
+        :return: The next move, or None if the end has been reached.
+        """
+        if self.result != "FAILURE" and self.it < len(self.moves_list):
             next_move = self.moves_list[self.it]
-            self.it = self.it + 1
+            self.it += 1
             return next_move
         return None
