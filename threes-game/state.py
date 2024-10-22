@@ -312,25 +312,15 @@ class State:
             e2 (State): The state to which the transition is being evaluated.
 
         Returns:
-            int: The difference in empty cells between the two states. If the number of empty cells increases, it returns 1 / (abs(total)), otherwise it returns difference of empty cells + 1 to avoid 0.
+            float: The cost based on the number of cells that have changed between
+                the current state and the new state.
         """
-        
-        celdas_movidas = 0
-        
-        celdas_movidas = 0
-        coste = 0
-        # Recorremos ambas matrices en paralelo para comparar las celdas
-        for i in range(self.grid.shape[0]):
-            for j in range(self.grid.shape[1]):
-                # Incrementamos el contador si la celda es diferente en e2 o no existe en el estado inicial
-                if self.grid[i, j] != e2.grid[i, j]:
-                    celdas_movidas += 1
-
-        # Calcular el coste basado en el número de celdas movidas
-        if celdas_movidas > 0:
-            coste = 1 / celdas_movidas
-
-        return coste
+        celdas_movidas = sum(
+            self.grid[i, j] != e2.grid[i, j]
+            for i in range(self.grid.shape[0])
+            for j in range(self.grid.shape[1])
+        )
+        return 1 / celdas_movidas if celdas_movidas > 0 else 0
 
 
     def total_points(self):
