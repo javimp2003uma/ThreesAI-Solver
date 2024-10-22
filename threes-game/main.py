@@ -19,7 +19,7 @@ def main():
             print("\nPrograma terminado por el usuario.")
             break 
         except Exception as e:
-            print(e)
+            pass
 
 if __name__ == "__main__":
     main()
