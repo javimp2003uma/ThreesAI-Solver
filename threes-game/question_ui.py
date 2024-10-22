@@ -65,17 +65,18 @@ class QuestionUI:
                 if inputAlgorithm:
                     inputAlgorithm.place_forget()
                     inputAlgorithm = None
+                # Start game button
+                tk.Button(
+                    text="Comenzar Juego",
+                    command=startGame,
+                    bg="#4CAF50",
+                    fg="white",
+                    font=("Arial", 14, "bold"),
+                    padx=20,
+                    pady=10
+                ).place(x=200, y=500)
 
-            # Start game button
-            tk.Button(
-                text="Comenzar Juego",
-                command=startGame,
-                bg="#4CAF50",
-                fg="white",
-                font=("Arial", 14, "bold"),
-                padx=20,
-                pady=10
-            ).place(x=200, y=500)
+            
 
         # Update heuristic menu based on algorithm selection
         def update_heuristic_menu(*args):
@@ -100,10 +101,33 @@ class QuestionUI:
                 if input_heuristic:
                     input_heuristic.place_forget()
                     input_heuristic = None
-
+                # Start game button
+                tk.Button(
+                    text="Comenzar Juego",
+                    command=startGame,
+                    bg="#4CAF50",
+                    fg="white",
+                    font=("Arial", 14, "bold"),
+                    padx=20,
+                    pady=10
+                ).place(x=200, y=500)
+            
+        def show_start_button(*args):
+        # Start game button
+            tk.Button(
+                text="Comenzar Juego",
+                command=startGame,
+                bg="#4CAF50",
+                fg="white",
+                font=("Arial", 14, "bold"),
+                padx=20,
+                pady=10
+            ).place(x=200, y=500)
+        
         # Trace changes in selection variables
         variable.trace_add('write', update_algorithm_menu)
         variableAlgorithm.trace_add('write', update_heuristic_menu)
+        variable_heuristic.trace_add('write', show_start_button)
 
         def startGame():
             """Starts the game with selected settings."""
