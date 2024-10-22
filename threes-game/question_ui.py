@@ -56,7 +56,7 @@ class QuestionUI:
                     preguntaAlgorithm.place(x=200, y=300)
 
                 if inputAlgorithm is None:
-                    inputAlgorithm = tk.OptionMenu(ventana, variableAlgorithm, "Depth First Search", "Breadth First Search", "A*", "A* Max")
+                    inputAlgorithm = tk.OptionMenu(ventana, variableAlgorithm, "Depth First Search", "Breadth First Search", "A*")
                     inputAlgorithm.place(x=200, y=350)
             else:
                 if preguntaAlgorithm is not None:
@@ -70,7 +70,7 @@ class QuestionUI:
         def update_heuristic_menu(*args):
             nonlocal pregunta_heuristic, input_heuristic
 
-            if variableAlgorithm.get() in ["A*", "A* Max"]:
+            if variableAlgorithm.get() == "A*":
                 if pregunta_heuristic is None:
                     pregunta_heuristic = tk.Label(text="¿Qué heuristica desea utilizar?", font="arial 15 bold", fg="black")
                     pregunta_heuristic.place(x=200, y=400)
@@ -106,11 +106,7 @@ class QuestionUI:
                 elif algorithm_aux == "Breadth First Search":
                     algorithm = ALGORITHMS.BREADTH_FIRST_SEARCH
                 else:
-                    if algorithm_aux == "A*":
-                        algorithm = ALGORITHMS.A_STAR
-                    elif algorithm_aux == "A* Max":
-                        algorithm = ALGORITHMS.A_STAR_MAX
-
+                    algorithm = ALGORITHMS.A_STAR
                     heuristic_aux = variable_heuristic.get()
                     if heuristic_aux == "More Free Cells":
                         heuristic = MoreFreeCellsHighValue()
