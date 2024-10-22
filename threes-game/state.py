@@ -304,26 +304,8 @@ class State:
                     return False
         return True
 
-    def edge_cost(self, e2):
-        """
-        Calculate the cost of transitioning from the current state to another state.
-
-        Args:
-            e2 (State): The state to which the transition is being evaluated.
-
-        Returns:
-            int: The difference in total points between the given state (e2) and the current state.
-        """
-        #mINIMIZAR HUECOS CON NUMEROS
-        num_huecos_prev = np.count_nonzero(self.grid)
-        num_huecos_next = np.count_nonzero(e2.grid)
-        total = num_huecos_prev - num_huecos_next
-        print("Puntos: ", self.total_points())
-        if total < 0:
-            return 1 / (abs(total))  # Cuanto más negativo, menor el costo
-    
-        # Si la diferencia es positiva o cero, el costo es directamente proporcional a la diferencia
-        return total  # +1 para evitar un costo de 0
+    def edge_cost(self, next_state):
+        return np.sum(next_state.grid == 0)
 
     def total_points(self):
         """
