@@ -55,7 +55,7 @@ class QuestionUI:
 
                 if inputAlgorithm is None:
                     inputAlgorithm = tk.OptionMenu(ventana, variableAlgorithm, 
-                        "Depth First Search", "Breadth First Search", "Greedy Search", "A*")
+                        "Depth First Search", "Breadth First Search", "Greedy Search", "A*", "A* Modified")
                     inputAlgorithm.place(x=200, y=350)
             else:
                 if preguntaAlgorithm:
@@ -141,6 +141,7 @@ class QuestionUI:
             "Depth First Search": ALGORITHMS.DEPTH_FIRST_SEARCH,
             "Breadth First Search": ALGORITHMS.BREADTH_FIRST_SEARCH,
             "A*": ALGORITHMS.A_STAR,
+            "A* Modified": ALGORITHMS.A_STAR_MODIFIED,
             "Greedy Search": ALGORITHMS.GREEDY_SEARCH
         }
         return mapping.get(algorithm_name)
