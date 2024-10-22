@@ -221,11 +221,11 @@ class ThreeGame:
         if self.game_mode == GAME_MODES.USER:
             self.run_user_mode(MOVES, running)
         elif self.game_mode == GAME_MODES.IA:
-            points = self.run_ai_mode(running, headless)
+            points, opened, closed, depth = self.run_ai_mode(running, headless)
 
         end_time = time.time()
 
-        return points, end_time - start_time
+        return points, end_time - start_time, opened, closed, depth
 
     def run_user_mode(self, MOVES, running):
         """
@@ -275,8 +275,9 @@ class ThreeGame:
                 self.state.move(translated_move)
                 if self.state.completed_state():
                     if headless:
+                        opened, closed, depth = algorithm_class.returnOpenAndClose()
                         points = self.state.total_points()
-                        return points
+                        return points, opened, closed, depth
                     self.show_points_window()
                     running = False
             self.draw_grid()

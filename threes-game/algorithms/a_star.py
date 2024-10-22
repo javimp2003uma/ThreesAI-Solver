@@ -16,8 +16,11 @@ class AStar(SearchAlgorithm):
         """
         self.headless = headless
         self.heuristic = heuristic
-        self.result, self.path, self.moves_list = self.run_algorithm(initial_state.clone_state())
+        self.result, self.path, self.moves_list, self.open, self.closed, self.depth = self.run_algorithm(initial_state.clone_state())
         self.it = 0
+
+    def returnOpenAndClose(self):
+        return self.open, self.closed, self.depth
 
     def run_algorithm(self, s):
         """
@@ -44,7 +47,7 @@ class AStar(SearchAlgorithm):
                 print(f"OPEN_SET: {len(OPEN_SET)} | CLOSED_SET: {len(CLOSED_SET)} | DEPTH: {len(n.antecesores())}")
 
             if n.value.completed_state():  # If n is the goal
-                return "SUCCESS", n.antecesores() + [n], n.moves_list()  # Return the found path
+                return "SUCCESS", n.antecesores() + [n], n.moves_list() , len(OPEN_SET), len(CLOSED_SET), len(n.antecesores()) # Return the found path
 
             M = n.sucesores_sin_antecesores()  # Expand n to get its successors
 
