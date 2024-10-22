@@ -115,7 +115,6 @@ class ThreeGame:
         label_font = pygame.font.Font(None, 25)
         next_num_font = pygame.font.Font(None, 35)
 
-        # Draw the seed label and value
         seed_label_surf = label_font.render("Seed", True, CELL_COLOR_ONES)
         seed_label_rect = seed_label_surf.get_rect(
             center=(self.size * (CELL_SIZE + MARGIN) + (NEXT_NUM_SPACE - MARGIN) // 2,
@@ -127,7 +126,6 @@ class ThreeGame:
                     self.size * (CELL_SIZE + MARGIN) // 2 - 20)
         )
 
-        # Draw the "Next Number" label and value
         label_surf = label_font.render("Next Number", True, CELL_COLOR_ONES)
         label_rect = label_surf.get_rect(
             center=(self.size * (CELL_SIZE + MARGIN) + (NEXT_NUM_SPACE - MARGIN) // 2,
@@ -138,8 +136,6 @@ class ThreeGame:
             center=(self.size * (CELL_SIZE + MARGIN) + (NEXT_NUM_SPACE - MARGIN) // 2,
                     self.size * (CELL_SIZE + MARGIN) // 2 + 30)
         )
-
-        # Draw background rectangle for text
         pygame.draw.rect(
             self.screen,
             CELL_COLOR_DEFAULT,
@@ -148,7 +144,7 @@ class ThreeGame:
             NEXT_NUM_SPACE - MARGIN + 5, 110)
         )
 
-        # Blit the seed, "Next Number" label, and next number value
+
         self.screen.blits([
             (seed_label_surf, seed_label_rect),
             (seed_value_surf, seed_value_rect),
@@ -164,9 +160,9 @@ class ThreeGame:
         This method renders the end-game message with a translucent overlay
         and waits for the user to press a key to close the game.
         """
-        # Create a translucent surface
+       
         overlay = pygame.Surface(self.screen.get_size(), pygame.SRCALPHA)
-        overlay.fill((0, 0, 0, 150))  # (R, G, B, A), where A is the alpha (transparency)
+        overlay.fill((0, 0, 0, 150)) 
 
         font = pygame.font.Font(None, 34)
         total_points = round(self.state.total_points(), 2)
@@ -189,8 +185,8 @@ class ThreeGame:
             if blink_timer % 5 == 0:
                 show_text = not show_text
 
-            self.draw_grid()  # Redraw the grid behind the overlay
-            self.screen.blit(overlay, (0, 0))  # Apply the translucent overlay
+            self.draw_grid()  
+            self.screen.blit(overlay, (0, 0))  
 
             if show_text:
                 self.screen.blit(line1, rect1)
