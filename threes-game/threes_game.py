@@ -3,7 +3,6 @@ import time
 
 from state import State
 from structures.utils import GAME_MODES, TRANSLATE_MOVES, ALGORITHM_CLASSES
-from question_ui import QuestionUI
 
 BACKGROUND_COLOR = (187, 173, 160)
 CELL_COLOR_ONES = (241, 103, 128)
