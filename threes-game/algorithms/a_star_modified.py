@@ -51,7 +51,7 @@ class AStarModified(SearchAlgorithm):
 
             for n2 in M:  # For each successor n2
                 tentative_g_cost = (n.value.edge_cost(n2.value)) / (1 + len(n.antecesores()))  # Cost to reach n2
-                print(g_cost[n.value], tentative_g_cost)
+              
                 f_cost_n2 = tentative_g_cost + self.heuristic.evaluate(n2.value)
                 n2.update_f_cost(tentative_g_cost, self.heuristic.evaluate(n2.value))
                 # If n2 is new
