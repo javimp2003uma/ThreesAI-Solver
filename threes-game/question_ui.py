@@ -8,6 +8,7 @@ from algorithms.strategy.max_tiles_combination_potential import MaxTilesCombinat
 from algorithms.strategy.max_tile_and_free_cells import MaxTileAndFreeCells 
 from algorithms.strategy.max_achievable_minus_current import MaxAchievableMinusCurrentScore
 from algorithms.strategy.min_non_free_cells import MinNonFreeCells
+from algorithms.strategy.max_move_cells_and_fusion import MaxMoveCellsAndFusion 
 from structures.utils import ALGORITHMS, GAME_MODES
 
 class QuestionUI:
@@ -89,7 +90,7 @@ class QuestionUI:
                     input_heuristic = tk.OptionMenu(ventana, variable_heuristic, 
                         "More Free Cells", "Number No Matches", "MaxValueAndAdjacent", "Dijkstra", 
                         "MaxTilesCombinationPotencial", "MaxTilesAndFreeCells", 
-                        "MaxAchievableMinusCurrentScore", "MinNonFreeCells")
+                        "MaxAchievableMinusCurrentScore", "MinNonFreeCells" , "MaxMoveCellsAndFusion")
                     input_heuristic.place(x=200, y=450)
             else:
                 if pregunta_heuristic:
@@ -154,6 +155,7 @@ class QuestionUI:
             "MaxTilesCombinationPotencial": MaxTilesCombinationPotential(),
             "MaxTilesAndFreeCells": MaxTileAndFreeCells(),
             "MaxAchievableMinusCurrentScore": MaxAchievableMinusCurrentScore(),
-            "MinNonFreeCells": MinNonFreeCells()
+            "MinNonFreeCells": MinNonFreeCells(),
+            "MaxMoveCellsAndFusion": MaxMoveCellsAndFusion()
         }
         return mapping.get(heuristic_name)
