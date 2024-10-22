@@ -185,6 +185,7 @@ class ThreeGame:
         Args:
             headless: Indicates whether to run without a graphical interface.
         """
+        start_time = time.time()
         if not headless:
             print(f"Running the game with parameters: {self.seed}, {self.game_mode}, {self.algorithm}")
 
@@ -201,7 +202,9 @@ class ThreeGame:
         elif self.game_mode == GAME_MODES.IA:
             points = self.run_ai_mode(running, headless)
 
-        return points
+        end_time = time.time()
+
+        return points, end_time - start_time
 
     def run_user_mode(self, MOVES, running):
         """
