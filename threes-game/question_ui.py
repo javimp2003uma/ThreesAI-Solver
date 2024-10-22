@@ -8,6 +8,7 @@ from algorithms.strategy.max_tiles_combination_potential import MaxTilesCombinat
 from algorithms.strategy.max_tile_and_free_cells import MaxTileAndFreeCells 
 from algorithms.strategy.max_achievable_minus_current import MaxAchievableMinusCurrentScore
 from algorithms.strategy.heuristic_maximize_score import HeuristicMaximizeScore
+from algorithms.strategy.min_non_free_cells import MinNonFreeCells
 from structures.utils import ALGORITHMS, GAME_MODES
 
 class QuestionUI:
@@ -56,7 +57,7 @@ class QuestionUI:
                     preguntaAlgorithm.place(x=200, y=300)
 
                 if inputAlgorithm is None:
-                    inputAlgorithm = tk.OptionMenu(ventana, variableAlgorithm, "Depth First Search", "Breadth First Search", "A*")
+                    inputAlgorithm = tk.OptionMenu(ventana, variableAlgorithm, "Depth First Search", "Breadth First Search", "Greedy Search", "A*")
                     inputAlgorithm.place(x=200, y=350)
             else:
                 if preguntaAlgorithm is not None:
@@ -70,13 +71,13 @@ class QuestionUI:
         def update_heuristic_menu(*args):
             nonlocal pregunta_heuristic, input_heuristic
 
-            if variableAlgorithm.get() == "A*":
+            if variableAlgorithm.get() in ["A*", "Greedy Search"]:
                 if pregunta_heuristic is None:
                     pregunta_heuristic = tk.Label(text="¿Qué heuristica desea utilizar?", font="arial 15 bold", fg="black")
                     pregunta_heuristic.place(x=200, y=400)
 
                 if input_heuristic is None:
-                    input_heuristic = tk.OptionMenu(ventana, variable_heuristic, "More Free Cells", "Number No Matches", "MaxValueAndAdjacent", "Dijkstra", "MaxTilesCombinationPotencial", "MaxTilesAndFreeCells", "MaxAchievableMinusCurrentScore","maximizescore")
+                    input_heuristic = tk.OptionMenu(ventana, variable_heuristic, "More Free Cells", "Number No Matches", "MaxValueAndAdjacent", "Dijkstra", "MaxTilesCombinationPotencial", "MaxTilesAndFreeCells", "MaxAchievableMinusCurrentScore", "MinNonFreeCells", "maximizescore")
                     input_heuristic.place(x=200, y=450)
             else:
                 if pregunta_heuristic is not None:
@@ -106,7 +107,10 @@ class QuestionUI:
                 elif algorithm_aux == "Breadth First Search":
                     algorithm = ALGORITHMS.BREADTH_FIRST_SEARCH
                 else:
-                    algorithm = ALGORITHMS.A_STAR
+                    if algorithm_aux == "A*":
+                        algorithm = ALGORITHMS.A_STAR
+                    elif algorithm_aux == "Greedy Search":
+                        algorithm = ALGORITHMS.GREEDY_SEARCH
                     heuristic_aux = variable_heuristic.get()
                     if heuristic_aux == "More Free Cells":
                         heuristic = MoreFreeCellsHighValue()
@@ -124,6 +128,8 @@ class QuestionUI:
                         heuristic = MaxAchievableMinusCurrentScore()
                     elif heuristic_aux == "maximizescore":
                         heuristic = HeuristicMaximizeScore()
+                    elif heuristic_aux == "MinNonFreeCells":
+                        heuristic = MinNonFreeCells()
 
             # Guardar los valores y cerrar la ventana
             self.result = (game_mode, seed, algorithm, heuristic)

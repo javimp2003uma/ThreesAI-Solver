@@ -1,7 +1,7 @@
 import pygame
 from enum import Enum
 
-from algorithms import BreadthFirstSearch, DepthFirstSearch, AStar
+from algorithms import BreadthFirstSearch, DepthFirstSearch, GreedySearch, AStar
 
 class GAME_MODES(Enum):
     USER = 0
@@ -10,7 +10,8 @@ class GAME_MODES(Enum):
 class ALGORITHMS(Enum):
     DEPTH_FIRST_SEARCH = 0
     BREADTH_FIRST_SEARCH = 1
-    A_STAR = 2
+    GREEDY_SEARCH = 2
+    A_STAR = 3
 
 class MOVEMENTS(Enum):
     UP = 0
@@ -21,7 +22,8 @@ class MOVEMENTS(Enum):
 ALGORITHM_CLASSES = {
     ALGORITHMS.DEPTH_FIRST_SEARCH: DepthFirstSearch,
     ALGORITHMS.BREADTH_FIRST_SEARCH: BreadthFirstSearch,
-    ALGORITHMS.A_STAR: AStar
+    ALGORITHMS.A_STAR: AStar,
+    ALGORITHMS.GREEDY_SEARCH: GreedySearch
 }
 
 TRANSLATE_MOVES = {
