@@ -1,5 +1,5 @@
 import tkinter as tk
-
+import random as rnd
 from algorithms.strategy.more_free_cells_high_value import MoreFreeCellsHighValue
 from algorithms.strategy.number_equals import NumberEquals
 from algorithms.strategy.dijkstra import Dijkstra
@@ -35,6 +35,7 @@ class QuestionUI:
 
         inputSeed = tk.Entry(ventana, font="arial 15 bold")
         inputSeed.place(x=200, y=250)
+        inputSeed.insert(0, rnd.randint(0, 100000))
 
         variableAlgorithm = tk.StringVar(ventana)
         variableAlgorithm.set("Elije el algoritmo")
@@ -146,147 +147,15 @@ class QuestionUI:
         )
         boton.place(x=200, y=500)
 
-        self.result = None
+        self.result = None  # Inicializa el resultado
+
+        # Método para manejar el cierre de la ventana
+        def on_closing():
+            self.result = None  # O cualquier valor que desees
+            ventana.destroy()  # Cierra la ventana
+
+        # Configurar el protocolo para el botón de cerrar
+        ventana.protocol("WM_DELETE_WINDOW", on_closing)
         ventana.mainloop()
 
         return self.result
-# import tkinter as tk
-# import os
-# import importlib
-# from structures.utils import ALGORITHMS, GAME_MODES
-
-# class QuestionUI:
-#     def run(self):
-#         ventana = tk.Tk()
-#         ventana.title("THREES by Los Monotonos")
-#         ventana.config(width=675, height=600)
-#         ventana.resizable(False, False)
-
-#         titulo_programa = tk.Label(text="THREES GAME", font="arial 30 bold", fg="black")
-#         titulo_programa.place(x=200, y=20)
-
-#         preguntaUser = tk.Label(text="¿Qué modo de juego desea?", font="arial 15 bold", fg="black")
-#         preguntaUser.place(x=200, y=100)
-
-#         variable = tk.StringVar(ventana)
-#         variable.set("Elije el quién va a jugar")
-
-#         inputUser = tk.OptionMenu(ventana, variable, "USER", "IA")
-#         inputUser.place(x=200, y=150)
-
-#         preguntaSeed = tk.Label(text="Introduzca una semilla", font="arial 15 bold", fg="black")
-#         preguntaSeed.place(x=200, y=200)
-
-#         inputSeed = tk.Entry(ventana, font="arial 15 bold")
-#         inputSeed.place(x=200, y=250)
-
-#         variableAlgorithm = tk.StringVar(ventana)
-#         variableAlgorithm.set("Elije el algoritmo")
-
-#         variable_heuristic = tk.StringVar(ventana)
-#         variable_heuristic.set("Elije la heuristica")
-
-#         preguntaAlgorithm = None
-#         inputAlgorithm = None
-
-#         pregunta_heuristic = None
-#         input_heuristic = None
-
-#         # Cargar algoritmos automáticamente
-#         strategy_dir = 'algorithms/strategy'  # Cambia esto a tu ruta
-#         strategy = {}
-#         algorithms_dir = 'algorithms'  # Cambia esto a tu ruta
-#         algorithms = {}
-
-#         for filename in os.listdir(algorithms_dir):
-#             if filename.endswith('.py') and filename != '__init__.py' and filename != 'heuristic.py':
-#                 module_name = filename[:-3]
-#                 module = importlib.import_module(f"algorithms.{module_name}")
-#                 algorithms[module_name] = module
-
-#         for filename in os.listdir(strategy_dir):
-#             if filename.endswith('.py') and filename != '__init__.py' and filename != 'search_algorithm.py':
-#                 module_name = filename[:-3]  # Eliminar .py
-#                 module = importlib.import_module(f"algorithms.strategy.{module_name}")
-#                 strategy[module_name] = module
-
-#         def update_algorithm_menu(*args):
-#             nonlocal preguntaAlgorithm, inputAlgorithm
-
-#             if variable.get() == "IA":
-#                 if preguntaAlgorithm is None:
-#                     preguntaAlgorithm = tk.Label(text="¿Qué algoritmo desea utilizar?", font="arial 15 bold", fg="black")
-#                     preguntaAlgorithm.place(x=200, y=300)
-
-#                 if inputAlgorithm is None:
-#                     inputAlgorithm = tk.OptionMenu(ventana, variableAlgorithm, *algorithms.keys())
-#                     inputAlgorithm.place(x=200, y=350)
-#             else:
-#                 if preguntaAlgorithm is not None:
-#                     preguntaAlgorithm.place_forget()
-#                     preguntaAlgorithm = None
-
-#                 if inputAlgorithm is not None:
-#                     inputAlgorithm.place_forget()
-#                     inputAlgorithm = None
-
-#         def update_heuristic_menu(*args):
-#             nonlocal pregunta_heuristic, input_heuristic
-
-#             if variableAlgorithm.get() == "a_star":
-#                 if pregunta_heuristic is None:
-#                     pregunta_heuristic = tk.Label(text="¿Qué heuristica desea utilizar?", font="arial 15 bold", fg="black")
-#                     pregunta_heuristic.place(x=200, y=400)
-
-#                 if input_heuristic is None:
-#                     heuristic_options = list(strategy.keys())  # Opciones basadas en los algoritmos cargados
-#                     input_heuristic = tk.OptionMenu(ventana, variable_heuristic, *heuristic_options)
-#                     input_heuristic.place(x=200, y=450)
-#             else:
-#                 if pregunta_heuristic is not None:
-#                     pregunta_heuristic.place_forget()
-#                     pregunta_heuristic = None
-
-#                 if input_heuristic is not None:
-#                     input_heuristic.place_forget()
-#                     input_heuristic = None
-
-#         variable.trace('w', update_algorithm_menu)
-#         variableAlgorithm.trace('w', update_heuristic_menu)
-
-#         def startGame():
-#             heuristic = None
-#             seed = inputSeed.get()
-#             game_mode_aux = variable.get()
-
-#             if game_mode_aux == "USER":
-#                 game_mode = GAME_MODES.USER
-#                 algorithm = None
-#             else:
-#                 game_mode = GAME_MODES.IA
-#                 algorithm_aux = variableAlgorithm.get()
-#                 algorithm = algorithms.get(algorithm_aux)#Esto no funciona
-
-#                 if algorithm is not None and algorithm_aux == "a_star":
-#                     heuristic_aux = variable_heuristic.get()
-#                     heuristic = strategy.get(heuristic_aux) #Esto no funciona
-
-#             # Guardar los valores y cerrar la ventana
-#             self.result = (game_mode, seed, algorithm, heuristic)
-#             ventana.destroy()
-
-#         boton = tk.Button(
-#             text="Comenzar Juego",
-#             command=startGame,
-#             bg="#4CAF50",
-#             fg="white",
-#             font=("Arial", 14, "bold"),
-#             padx=20,
-#             pady=10
-#         )
-#         boton.place(x=200, y=500)
-
-#         self.result = None
-#         ventana.mainloop()
-
-#         return self.result
