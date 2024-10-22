@@ -68,6 +68,16 @@ class QuestionUI:
                 if inputAlgorithm is not None:
                     inputAlgorithm.place_forget()
                     inputAlgorithm = None
+            boton = tk.Button(
+            text="Comenzar Juego",
+            command=startGame,
+            bg="#4CAF50",
+            fg="white",
+            font=("Arial", 14, "bold"),
+            padx=20,
+            pady=10
+            )
+            boton.place(x=200, y=500)
 
         def update_heuristic_menu(*args):
             nonlocal pregunta_heuristic, input_heuristic
@@ -89,8 +99,8 @@ class QuestionUI:
                     input_heuristic.place_forget()
                     input_heuristic = None
 
-        variable.trace('w', update_algorithm_menu)
-        variableAlgorithm.trace('w', update_heuristic_menu)
+        variable.trace_add('write', update_algorithm_menu)
+        variableAlgorithm.trace_add('write', update_heuristic_menu)
 
         def startGame():
             heuristic = None
@@ -135,17 +145,6 @@ class QuestionUI:
             # Guardar los valores y cerrar la ventana
             self.result = (game_mode, seed, algorithm, heuristic)
             ventana.destroy()
-
-        boton = tk.Button(
-            text="Comenzar Juego",
-            command=startGame,
-            bg="#4CAF50",
-            fg="white",
-            font=("Arial", 14, "bold"),
-            padx=20,
-            pady=10
-        )
-        boton.place(x=200, y=500)
 
         self.result = None 
 
